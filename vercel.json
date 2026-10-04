@@ -2,10 +2,10 @@
   "env": {
     "PYTHONPATH": "."
   },
-  "rewrites": [
+  "routes": [
     {
-      "source": "/api/(.*)",
-      "destination": "/api/index.py?_path=$1"
+      "src": "/api/(.*)",
+      "dest": "api/index.py"
     }
   ]
 }
