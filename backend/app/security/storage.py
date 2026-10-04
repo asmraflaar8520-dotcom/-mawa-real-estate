@@ -74,6 +74,14 @@ def validate_and_save_private_document(file: UploadFile) -> str:
             detail=f"حجم الملف يتجاوز الحد المسموح به ({MAX_UPLOAD_SIZE_MB} ميجابايت)"
         )
 
+    # Magic Bytes Validation
+    if ext == ".pdf" and not content.startswith(b"%PDF"):
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="محتوى ملف PDF غير صالح")
+    elif ext in [".jpg", ".jpeg"] and not content.startswith(b"\xff\xd8\xff"):
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="محتوى صورة JPEG غير صالح")
+    elif ext == ".png" and not content.startswith(b"\x89PNG\r\n\x1a\n"):
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="محتوى صورة PNG غير صالح")
+
     secure_filename = f"priv_doc_{uuid.uuid4().hex}{ext}"
     target_path = STORAGE_PRIVATE_DIR / secure_filename
 

@@ -72,7 +72,7 @@ def test_viewing_sensitive_document_generates_audit_log():
 
     # Buyer uploads an ID document
     import io
-    dummy_file = io.BytesIO(b"DUMMY_NATIONAL_ID_CONTENT_12345")
+    dummy_file = io.BytesIO(b"\xff\xd8\xffDUMMY_NATIONAL_ID_CONTENT_12345")
     upload_res = client.post(
         "/api/verifications/identity",
         files={"file": ("national_id.jpg", dummy_file, "image/jpeg")},

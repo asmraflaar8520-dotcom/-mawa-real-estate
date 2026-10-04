@@ -25,3 +25,7 @@ Thumbs.db
 # Test databases
 test.db
 *.test.db
+
+# Databases
+mawa.db
+*.sqlite3

@@ -15,6 +15,12 @@ class UserRegisterRequest(BaseModel):
     phone_number: Optional[str] = Field(None, max_length=20)
     role: UserRole = UserRole.BUYER
 
+    @field_validator("role")
+    def validate_role(cls, v: UserRole):
+        if v not in (UserRole.BUYER, UserRole.AGENT):
+            raise ValueError("لا يمكن التسجيل بهذه الصلاحية")
+        return v
+
     @field_validator("full_name")
     def validate_name(cls, v: str):
         cleaned = v.strip()
