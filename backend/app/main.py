@@ -64,11 +64,18 @@ app.include_router(verifications.router)
 app.include_router(admin.router)
 app.include_router(reports.router)
 
-# Mount Public Media (Photos with EXIF stripped)
-app.mount("/media", StaticFiles(directory=str(STORAGE_PUBLIC_DIR)), name="media")
+@app.get("/health")
+def health():
+    return {"status": "ok", "app": PROJECT_NAME}
 
-# Mount Frontend Static Assets
+# Mount Public Media (Photos with EXIF stripped)
+if STORAGE_PUBLIC_DIR.exists():
+    app.mount("/media", StaticFiles(directory=str(STORAGE_PUBLIC_DIR)), name="media")
+
+# Mount Frontend Static Assets (Locally when not running on Vercel CDN)
+from backend.app.config import IS_VERCEL
 frontend_dir = BASE_DIR / "frontend"
-if frontend_dir.exists():
+if not IS_VERCEL and frontend_dir.exists():
     app.mount("/", StaticFiles(directory=str(frontend_dir), html=True), name="frontend")
+
 

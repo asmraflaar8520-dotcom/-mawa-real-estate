@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>تسجيل الدخول | مأوى — مكانك يبدأ بثقة</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/css/design-system.css">
+</head>
+<body style="background:var(--color-surface-low); min-height:100vh; display:flex; flex-direction:column;">
+
+  <!-- Simple Header -->
+  <header class="navbar">
+    <div class="container nav-content">
+      <a href="/" class="logo-brand">
+        <div class="logo-badge">مـ</div>
+        <div class="logo-text">
+          <span class="logo-title">مأوى | MA'WA</span>
+          <span class="logo-tagline">مكانك يبدأ بثقة — الغربية</span>
+        </div>
+      </a>
+      <a href="/" class="btn btn-outline btn-sm">← العودة للرئيسية</a>
+    </div>
+  </header>
+
+  <div class="container" style="flex-grow:1; display:flex; align-items:center; justify-content:center; padding:3rem 1rem;">
+    <div style="background:white; border-radius:var(--radius-xl); padding:2.5rem; max-width:440px; width:100%; box-shadow:var(--shadow-md); border:1px solid var(--color-outline-variant);">
+      <div style="text-align:center; margin-bottom:2rem;">
+        <div class="logo-badge" style="margin:0 auto 1rem auto; width:52px; height:52px; font-size:1.5rem;">مـ</div>
+        <h2 style="color:#0b2545; font-size:1.5rem; margin-bottom:0.4rem;">تسجيل الدخول إلى مأوى</h2>
+        <p style="font-size:0.85rem; color:var(--color-on-surface-variant);">أدخل بريدك الإلكتروني وكلمة المرور للمتابعة</p>
+      </div>
+
+      <form id="login-form" onsubmit="handleLogin(event)">
+        <div class="form-group" style="margin-bottom:1.25rem;">
+          <label class="form-label" for="login-email">البريد الإلكتروني</label>
+          <input type="email" id="login-email" class="form-control" placeholder="name@example.com" required>
+        </div>
+
+        <div class="form-group" style="margin-bottom:1.5rem;">
+          <label class="form-label" for="login-password">كلمة المرور</label>
+          <input type="password" id="login-password" class="form-control" placeholder="••••••••" required>
+        </div>
+
+        <button type="submit" id="btn-submit" class="btn btn-primary" style="width:100%; padding:0.85rem; font-size:1rem;">
+          تسجيل الدخول
+        </button>
+      </form>
+
+      <div style="margin-top:1.5rem; text-align:center; font-size:0.88rem; color:var(--color-on-surface-variant); border-top:1px solid var(--color-surface-container); padding-top:1.25rem;">
+        ليس لديك حساب بعد؟ <a href="/register.html" style="font-weight:700;">إنشاء حساب جديد</a>
+      </div>
+
+
+    </div>
+  </div>
+
+  <script src="/js/app.js"></script>
+  <script>
+    async function handleLogin(e) {
+      e.preventDefault();
+      const email = document.getElementById('login-email').value;
+      const password = document.getElementById('login-password').value;
+      const btn = document.getElementById('btn-submit');
+
+      btn.disabled = true;
+      btn.textContent = 'جارٍ التحقق...';
+
+      try {
+        const res = await fetch(`${API_BASE}/auth/login`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ email, password })
+        });
+
+        const data = await res.json();
+        if (res.ok) {
+          App.setAuth(data.access_token, {
+            id: data.user_id,
+            email: data.email,
+            full_name: data.full_name,
+            role: data.role,
+            identity_status: data.identity_status,
+            professional_status: data.professional_status
+          });
+          App.showToast('مرحباً بك! تم تسجيل الدخول بنجاح');
+          setTimeout(() => window.location.href = '/dashboard.html', 800);
+        } else {
+          App.showToast(data.detail || 'فشل تسجيل الدخول', 'error');
+        }
+      } catch (err) {
+        App.showToast('تعذر الاتصال بالخادم', 'error');
+      } finally {
+        btn.disabled = false;
+        btn.textContent = 'تسجيل الدخول';
+      }
+    }
+  </script>
+</body>
+</html>
