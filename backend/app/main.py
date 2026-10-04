@@ -35,7 +35,8 @@ app = FastAPI(
     title=PROJECT_NAME,
     description="منصة مأوى العقارية لمحافظة الغربية — مكانك يبدأ بثقة",
     version="1.0.0",
-    lifespan=lifespan
+    lifespan=lifespan,
+    redirect_slashes=False
 )
 
 # Apply Middlewares
@@ -72,6 +73,15 @@ def health(request: Request):
         "status": "ok",
         "app": PROJECT_NAME,
         "path": request.url.path
+    }
+
+@app.api_route("/api/index.py", methods=["GET", "POST", "PUT", "DELETE", "PATCH"])
+@app.api_route("/index.py", methods=["GET", "POST", "PUT", "DELETE", "PATCH"])
+def debug_rewrite(request: Request):
+    return {
+        "debug_message": "Vercel rewrote request to index.py literal path",
+        "original_url": str(request.url),
+        "headers": dict(request.headers)
     }
 
 # Mount Public Media (Photos with EXIF stripped)
