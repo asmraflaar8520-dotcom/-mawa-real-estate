@@ -57,9 +57,15 @@ app.include_router(verifications.router)
 app.include_router(admin.router)
 app.include_router(reports.router)
 
+@app.get("/api/health")
 @app.get("/health")
-def health():
-    return {"status": "ok", "app": PROJECT_NAME}
+def health(request: Request):
+    return {
+        "status": "ok",
+        "app": PROJECT_NAME,
+        "path": request.url.path,
+        "routes": [getattr(r, "path", str(r)) for r in app.routes]
+    }
 
 # Mount Public Media (Photos with EXIF stripped)
 if STORAGE_PUBLIC_DIR.exists():
