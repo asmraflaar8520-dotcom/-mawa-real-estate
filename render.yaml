@@ -1,0 +1,10 @@
+services:
+  - type: web
+    name: mawa-real-estate
+    runtime: python
+    plan: free
+    buildCommand: pip install -r requirements.txt && python -m backend.app.utils.seed_data
+    startCommand: uvicorn backend.app.main:app --host 0.0.0.0 --port $PORT
+    envVars:
+      - key: PYTHON_VERSION
+        value: 3.11.9
