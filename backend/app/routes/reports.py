@@ -5,7 +5,7 @@ from backend.app.models.entities import Property, PropertyReport, User
 from backend.app.schemas.dtos import ReportCreateRequest, ReportResponse
 from backend.app.security.auth_guard import get_current_user
 
-router = APIRouter(prefix="/api/reports", tags=["Reporting & Anti-Fraud"])
+router = APIRouter(tags=["Reporting & Anti-Fraud"])
 
 @router.post("", response_model=ReportResponse, status_code=status.HTTP_201_CREATED)
 def submit_report(

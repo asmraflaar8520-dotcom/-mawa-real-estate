@@ -16,7 +16,7 @@ from backend.app.security.auth_guard import (
 )
 from backend.app.security.storage import validate_and_save_public_image
 
-router = APIRouter(prefix="/api/properties", tags=["Properties"])
+router = APIRouter(tags=["Properties"])
 
 def to_public_response(prop: Property) -> PropertyPublicResponse:
     price_per_sqm = round(prop.price / prop.area_sqm, 2) if prop.area_sqm > 0 else 0.0

@@ -14,7 +14,7 @@ from backend.app.schemas.dtos import (
 from backend.app.security.auth_guard import require_admin
 from backend.app.routes.properties import to_public_response
 
-router = APIRouter(prefix="/api/admin", tags=["Admin Moderation & Audit"])
+router = APIRouter(tags=["Admin Moderation & Audit"])
 
 def log_admin_action(
     db: Session,

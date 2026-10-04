@@ -7,7 +7,7 @@ from backend.app.models.entities import (
 from backend.app.security.auth_guard import get_current_user
 from backend.app.security.storage import validate_and_save_private_document
 
-router = APIRouter(prefix="/api/verifications", tags=["Verifications & Trust"])
+router = APIRouter(tags=["Verifications & Trust"])
 
 @router.post("/identity")
 def upload_identity_document(

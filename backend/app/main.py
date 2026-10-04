@@ -49,22 +49,29 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# Include API Routers
-app.include_router(auth.router)
-app.include_router(properties.router)
-app.include_router(contacts.router)
-app.include_router(verifications.router)
-app.include_router(admin.router)
-app.include_router(reports.router)
+# Include API Routers (Mount at both /api/... and /... for seamless Vercel & local compatibility)
+routers_to_mount = [
+    (auth.router, "/auth"),
+    (properties.router, "/properties"),
+    (contacts.router, "/contact-requests"),
+    (verifications.router, "/verifications"),
+    (admin.router, "/admin"),
+    (reports.router, "/reports"),
+]
 
-@app.get("/api/health")
+for r, path in routers_to_mount:
+    app.include_router(r, prefix=f"/api{path}")
+    app.include_router(r, prefix=path)
+
+@app.get("/")
+@app.get("/api")
 @app.get("/health")
+@app.get("/api/health")
 def health(request: Request):
     return {
         "status": "ok",
         "app": PROJECT_NAME,
-        "path": request.url.path,
-        "routes": [getattr(r, "path", str(r)) for r in app.routes]
+        "path": request.url.path
     }
 
 # Mount Public Media (Photos with EXIF stripped)

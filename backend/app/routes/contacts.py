@@ -10,7 +10,7 @@ from backend.app.schemas.dtos import (
 )
 from backend.app.security.auth_guard import get_current_user
 
-router = APIRouter(prefix="/api/contact-requests", tags=["Contacts & Viewing Requests"])
+router = APIRouter(tags=["Contacts & Viewing Requests"])
 
 def to_contact_response(req: ContactRequest) -> ContactRequestResponse:
     return ContactRequestResponse(
