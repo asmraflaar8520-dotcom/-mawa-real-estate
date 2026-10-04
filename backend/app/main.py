@@ -29,13 +29,6 @@ from contextlib import asynccontextmanager
 async def lifespan(app: FastAPI):
     # Initialize all database tables
     Base.metadata.create_all(bind=engine)
-
-    # Seed an Initial Admin User and sample properties if none exist
-    try:
-        from backend.app.utils.seed_data import seed_database
-        seed_database()
-    except Exception as e:
-        print(f"Seed info: {e}")
     yield
 
 app = FastAPI(

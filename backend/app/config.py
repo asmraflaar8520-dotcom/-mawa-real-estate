@@ -25,11 +25,11 @@ if IS_VERCEL:
             shutil.copy2(orig_db, tmp_db)
         except Exception:
             pass
-    DATABASE_URL = os.getenv("DATABASE_URL", f"sqlite:///{tmp_db}")
+    DATABASE_URL = os.getenv("DATABASE_URL", f"sqlite:///{tmp_db.as_posix()}")
     STORAGE_PRIVATE_DIR = tmp_dir / "storage" / "private_docs"
     STORAGE_PUBLIC_DIR = tmp_dir / "storage" / "public_media"
 else:
-    DATABASE_URL = os.getenv("DATABASE_URL", f"sqlite:///{BASE_DIR}/mawa.db")
+    DATABASE_URL = os.getenv("DATABASE_URL", f"sqlite:///{BASE_DIR.as_posix()}/mawa.db")
     STORAGE_PRIVATE_DIR = Path(os.getenv("STORAGE_PRIVATE_DIR", BASE_DIR / "storage" / "private_docs"))
     STORAGE_PUBLIC_DIR = Path(os.getenv("STORAGE_PUBLIC_DIR", BASE_DIR / "storage" / "public_media"))
 
