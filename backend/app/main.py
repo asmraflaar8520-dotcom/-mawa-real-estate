@@ -30,24 +30,12 @@ async def lifespan(app: FastAPI):
     # Initialize all database tables
     Base.metadata.create_all(bind=engine)
 
-    # Seed an Initial Admin User if none exists (Securely for development/audit)
-    db = SessionLocal()
+    # Seed an Initial Admin User and sample properties if none exist
     try:
-        admin_user = db.query(User).filter(User.role == UserRole.ADMIN).first()
-        if not admin_user:
-            admin_user = User(
-                email="admin@mawa.eg",
-                password_hash=hash_password("AdminMawa2026!Safe"),
-                full_name="مشرف منصة مأوى",
-                phone_number="01000000000",
-                role=UserRole.ADMIN,
-                identity_status=IdentityStatus.APPROVED,
-                professional_status=ProfessionalStatus.VERIFIED
-            )
-            db.add(admin_user)
-            db.commit()
-    finally:
-        db.close()
+        from backend.app.utils.seed_data import seed_database
+        seed_database()
+    except Exception as e:
+        print(f"Seed info: {e}")
     yield
 
 app = FastAPI(
@@ -62,6 +50,7 @@ app.add_middleware(SecurityHeadersMiddleware)
 app.add_middleware(
     CORSMiddleware,
     allow_origins=ALLOWED_ORIGINS,
+    allow_origin_regex=r"https?://.*",
     allow_credentials=True,
     allow_methods=["GET", "POST", "PATCH", "DELETE", "OPTIONS"],
     allow_headers=["*"],
