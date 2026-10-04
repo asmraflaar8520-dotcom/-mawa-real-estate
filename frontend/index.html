@@ -1,0 +1,332 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>مأوى | MA'WA — عقارات محافظة الغربية (مكانك يبدأ بثقة)</title>
+  <meta name="description" content="المنصة العقارية الموثوقة الأولى لمحافظة الغربية (طنطا، المحلة الكبرى، زفتى). فحص مأوى، مقارنة فنية محايدة، وحماية خصوصية المعاينة.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/css/design-system.css">
+</head>
+<body>
+
+  <!-- Navigation -->
+  <header class="navbar">
+    <div class="container nav-content">
+      <a href="/" class="logo-brand">
+        <div class="logo-badge">مـ</div>
+        <div class="logo-text">
+          <span class="logo-title">مأوى | MA'WA</span>
+          <span class="logo-tagline">مكانك يبدأ بثقة — الغربية</span>
+        </div>
+      </a>
+
+      <nav>
+        <ul class="nav-links">
+          <li><a href="/" class="nav-link active">الرئيسية</a></li>
+          <li><a href="#properties-section" class="nav-link">عقارات الغربية</a></li>
+          <li><a href="#" onclick="App.goToCompare(); return false;" class="nav-link">المقارنة المحايدة <span id="compare-count-badge" class="badge badge-licensed" style="display:none; font-size:0.7rem; padding:1px 6px;">0</span></a></li>
+          <li><a href="/dashboard.html" class="nav-link">لوحة التحكم</a></li>
+        </ul>
+      </nav>
+
+      <div class="nav-actions" id="nav-auth-actions">
+        <!-- Injected via app.js -->
+      </div>
+    </div>
+  </header>
+
+  <!-- Hero Section -->
+  <section class="hero">
+    <div class="container hero-grid">
+      <div class="hero-content">
+        <div class="hero-badge">
+          <span>🏛️ المنظومة العقارية المعتمدة بمحافظة الغربية</span>
+        </div>
+        <h1 class="hero-title">عقارات موثقة وتراخيص مدققة في طنطا والمحلة وزفتى</h1>
+        <p class="hero-subtitle">
+          لا عشوائية في الأسعار ولا تسريب للبيانات. نوفر لك مقارنة فنية حيادية مبنية على سعر المتر الصافي، وفحصاً إرشادياً ذكياً، ومعاينة آمنة بالتراضي تحمي خصوصية المشتري والوسيط.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Search & Filter Card -->
+  <div class="container">
+    <div class="search-card">
+      <form id="search-form" class="search-form-grid" onsubmit="event.preventDefault(); loadProperties();">
+        <div class="form-group">
+          <label class="form-label" for="filter-city">المدينة</label>
+          <select id="filter-city" class="form-control">
+            <option value="">جميع مدن الغربية</option>
+            <option value="طنطا">طنطا</option>
+            <option value="المحلة الكبرى">المحلة الكبرى</option>
+            <option value="زفتى">زفتى</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="filter-district">الحي / المنطقة</label>
+          <input type="text" id="filter-district" class="form-control" placeholder="الاستاد، شكري القوتلي...">
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="filter-max-price">أقصى ميزانية (ج.م)</label>
+          <input type="number" id="filter-max-price" class="form-control" placeholder="مثال: 3,500,000">
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="filter-rooms">عدد الغرف</label>
+          <select id="filter-rooms" class="form-control">
+            <option value="">أي عدد</option>
+            <option value="2">غرفتان أو أكثر</option>
+            <option value="3">3 غرف أو أكثر</option>
+            <option value="4">4 غرف فأكثر</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="filter-sort">الترتيب</label>
+          <select id="filter-sort" class="form-control">
+            <option value="newest">الأحدث نشرًا</option>
+            <option value="price_asc">الأقل سعرًا</option>
+            <option value="price_desc">الأعلى سعرًا</option>
+            <option value="area_desc">الأكبر مساحة</option>
+          </select>
+        </div>
+
+        <button type="submit" class="btn btn-primary" style="height:44px;">
+          <span>🔍 بحث مدقق</span>
+        </button>
+      </form>
+    </div>
+  </div>
+
+  <!-- Trust Highlights -->
+  <section class="container" style="margin-top: 3.5rem;">
+    <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap:1.5rem;">
+      <div style="background:white; padding:1.5rem; border-radius:var(--radius-lg); border:1px solid var(--color-outline-variant);">
+        <div style="font-size:1.8rem; margin-bottom:0.5rem; color:var(--color-primary);">🛡️</div>
+        <h3 style="font-size:1.05rem; margin-bottom:0.4rem;">فصل حالات التوثيق</h3>
+        <p style="font-size:0.85rem; color:var(--color-on-surface-variant);">
+          نميز بوضوح بين توثيق هوية الوسيط، والاعتماد المهني، وموقف رخصة البناء لكل شقة دون أي ادعاءات مضللة.
+        </p>
+      </div>
+
+      <div style="background:white; padding:1.5rem; border-radius:var(--radius-lg); border:1px solid var(--color-outline-variant);">
+        <div style="font-size:1.8rem; margin-bottom:0.5rem; color:var(--color-primary);">📍</div>
+        <h3 style="font-size:1.05rem; margin-bottom:0.4rem;">حماية الخصوصية الجغرافية</h3>
+        <p style="font-size:0.85rem; color:var(--color-on-surface-variant);">
+          الموقع العام والحي يظهر للجميع، بينما العنوان التفصيلي الدقيق لا يُكشف إلا بعد قبول المعاينة بالتراضي.
+        </p>
+      </div>
+
+      <div style="background:white; padding:1.5rem; border-radius:var(--radius-lg); border:1px solid var(--color-outline-variant);">
+        <div style="font-size:1.8rem; margin-bottom:0.5rem; color:var(--color-primary);">⚖️</div>
+        <h3 style="font-size:1.05rem; margin-bottom:0.4rem;">مقارنة فنية محايدة</h3>
+        <p style="font-size:0.85rem; color:var(--color-on-surface-variant);">
+          قارن حتى 4 عقارات جنباً إلى جنب بحساب فوري لسعر المتر الصافي وحصة الأرض وموقف التراخيص.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Properties Section -->
+  <section id="properties-section" class="container" style="margin-top: 3.5rem; margin-bottom: 5rem;">
+    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:1.5rem;">
+      <div>
+        <h2 style="font-size:1.6rem; color:#0b2545;">العقارات المتاحة بمحافظة الغربية</h2>
+        <p style="font-size:0.9rem; color:var(--color-on-surface-variant);">معروضات مدققة ترخيصاً وموثقة هوية أصحابها</p>
+      </div>
+      <span id="properties-count-badge" class="badge badge-city" style="font-size:0.85rem; padding:0.4rem 0.8rem;">
+        جارٍ التحميل...
+      </span>
+    </div>
+
+    <!-- Quick City Filter Chips (خاص بالهواتف والتصفح السريع) -->
+    <div class="quick-filter-chips" id="quick-city-chips">
+      <button type="button" class="chip-btn active" onclick="setQuickCityFilter('', this)">
+        <span>🏛️ الكل</span>
+      </button>
+      <button type="button" class="chip-btn" onclick="setQuickCityFilter('طنطا', this)">
+        <span>📍 طنطا</span>
+      </button>
+      <button type="button" class="chip-btn" onclick="setQuickCityFilter('المحلة الكبرى', this)">
+        <span>📍 المحلة الكبرى</span>
+      </button>
+      <button type="button" class="chip-btn" onclick="setQuickCityFilter('زفتى', this)">
+        <span>📍 زفتى</span>
+      </button>
+    </div>
+
+    <div id="properties-container" class="properties-grid">
+      <!-- Injected via JavaScript -->
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer style="background:#0b2545; color:white; padding:3rem 0 2rem 0; margin-top:4rem;">
+    <div class="container" style="display:grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap:2rem; margin-bottom:2rem;">
+      <div>
+        <h3 style="color:white; margin-bottom:0.75rem;">مأوى | MA'WA</h3>
+        <p style="font-size:0.85rem; color:#a1b4ce; line-height:1.7;">
+          المنصة العقارية الرائدة المخصصة لخدمة مدن محافظة الغربية (طنطا، المحلة، زفتى). نضع الأمان، والخصوصية، وحيادية المعلومة في صدارة أولوياتنا.
+        </p>
+      </div>
+      <div>
+        <h4 style="color:white; margin-bottom:0.75rem;">روابط سريعة</h4>
+        <ul style="list-style:none; display:flex; flex-direction:column; gap:0.5rem; font-size:0.85rem;">
+          <li><a href="/" style="color:#d1e0f3;">الرئيسية</a></li>
+          <li><a href="#" onclick="App.goToCompare(); return false;" style="color:#d1e0f3;">المقارنة الفنية المحايدة</a></li>
+          <li><a href="/dashboard.html" style="color:#d1e0f3;">لوحة التحكم والطلبات</a></li>
+        </ul>
+      </div>
+      <div>
+        <h4 style="color:white; margin-bottom:0.75rem;">المدن المغطاة بالمرحلة الأولى</h4>
+        <div style="display:flex; flex-wrap:wrap; gap:0.5rem;">
+          <span class="badge" style="background:#1d395e; color:white;">طنطا</span>
+          <span class="badge" style="background:#1d395e; color:white;">المحلة الكبرى</span>
+          <span class="badge" style="background:#1d395e; color:white;">زفتى</span>
+        </div>
+      </div>
+    </div>
+    <div class="container" style="border-top:1px solid #1f3f6b; padding-top:1.5rem; text-align:center; font-size:0.8rem; color:#8fa8c9;">
+      جميع الحقوق محفوظة © 2026 لمنصة مأوى | مكانك يبدأ بثقة.
+    </div>
+  </footer>
+
+  <script src="/js/app.js"></script>
+  <script src="/js/mawa-check.js"></script>
+  <script>
+    async function loadProperties() {
+      const city = document.getElementById('filter-city').value;
+      const district = document.getElementById('filter-district').value;
+      const maxPrice = document.getElementById('filter-max-price').value;
+      const rooms = document.getElementById('filter-rooms').value;
+      const sort = document.getElementById('filter-sort').value;
+
+      let url = `${API_BASE}/properties?sort_by=${sort}`;
+      if (city) url += `&city=${encodeURIComponent(city)}`;
+      if (district) url += `&district=${encodeURIComponent(district)}`;
+      if (maxPrice) url += `&max_price=${maxPrice}`;
+      if (rooms) url += `&bedrooms=${rooms}`;
+
+      const container = document.getElementById('properties-container');
+      const countBadge = document.getElementById('properties-count-badge');
+      container.innerHTML = '<div style="grid-column:1/-1; text-align:center; padding:3rem; color:var(--color-secondary);">جارٍ جلب العقارات المدققة...</div>';
+
+      try {
+        const res = await fetch(url, { headers: App.getAuthHeaders() });
+        const properties = await res.json();
+
+        countBadge.textContent = `${properties.length} عقارات معتمدة`;
+
+        if (properties.length === 0) {
+          container.innerHTML = `
+            <div style="grid-column:1/-1; text-align:center; padding:4rem 1rem; background:white; border-radius:var(--radius-xl); border:1px solid var(--color-outline-variant);">
+              <div style="font-size:2.5rem; margin-bottom:1rem;">🏘️</div>
+              <h3 style="color:#0b2545; margin-bottom:0.5rem;">لا توجد عقارات تطابق هذا البحث حالياً</h3>
+              <p style="font-size:0.9rem; color:var(--color-on-surface-variant);">جرب تقليل محددات التصفية للوصول لنتائج أكثر في الغربية.</p>
+            </div>
+          `;
+          return;
+        }
+
+        container.innerHTML = properties.map(p => {
+          const isComparing = App.compareList.includes(p.id);
+          const primaryImg = p.images && p.images.length > 0 ? p.images[0].file_path : '/media/tanta_stadium.jpg';
+
+          return `
+            <div class="property-card">
+              <div class="property-image-wrapper">
+                <img src="${primaryImg}" alt="${p.title}" class="property-image" loading="lazy">
+                <div class="property-price-tag">
+                  ${p.price.toLocaleString()} ج.م
+                </div>
+                <div class="property-badges">
+                  <span class="badge badge-city">📍 ${p.city} - ${p.district}</span>
+                  ${p.agent_is_professionally_verified ? '<span class="badge badge-verified-agent">✓ وسيط مهني معتمد</span>' : ''}
+                </div>
+              </div>
+
+              <div class="property-content">
+                <div class="property-location">
+                  <span>🏢 ${p.building_license_status}</span>
+                </div>
+                <h3 class="property-title">
+                  <a href="/property.html?id=${p.id}">${p.title}</a>
+                </h3>
+
+                <div class="property-specs">
+                  <div class="spec-item">
+                    <span class="spec-label">المساحة</span>
+                    <span class="spec-value">${p.area_sqm} م²</span>
+                  </div>
+                  <div class="spec-item">
+                    <span class="spec-label">سعر المتر</span>
+                    <span class="spec-value">${p.price_per_sqm.toLocaleString()} ج.م</span>
+                  </div>
+                  <div class="spec-item">
+                    <span class="spec-label">الغرف</span>
+                    <span class="spec-value">${p.bedrooms} نوم | ${p.bathrooms} حمام</span>
+                  </div>
+                </div>
+
+                <div class="property-footer">
+                  <button onclick="App.toggleCompare('${p.id}'); loadProperties();" class="btn ${isComparing ? 'btn-tertiary' : 'btn-secondary'} btn-sm">
+                    ${isComparing ? '✓ بالمقارنة' : '⚖️ أضف للمقارنة'}
+                  </button>
+                  <a href="/property.html?id=${p.id}" class="btn btn-primary btn-sm">
+                    تفاصيل وفحص مأوى
+                  </a>
+                </div>
+              </div>
+            </div>
+          `;
+        }).join('');
+
+      } catch (err) {
+        console.error(err);
+        container.innerHTML = '<div style="grid-column:1/-1; text-align:center; padding:3rem; color:var(--color-error);">حدث خطأ أثناء تحميل بيانات العقارات.</div>';
+      }
+    }
+
+    function setQuickCityFilter(city, btn) {
+      document.querySelectorAll('#quick-city-chips .chip-btn').forEach(b => b.classList.remove('active'));
+      if (btn) btn.classList.add('active');
+      const citySelect = document.getElementById('filter-city');
+      if (citySelect) {
+        citySelect.value = city;
+      }
+      loadProperties();
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+      loadProperties();
+    });
+  </script>
+
+  <!-- Mobile Bottom Navigation Bar (شريط التنقل السفلي المثبت للهاتف) -->
+  <nav class="mobile-bottom-nav">
+    <a href="/" class="mobile-nav-item active">
+      <svg viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><polyline points="9 22 9 12 15 12 15 22"></polyline></svg>
+      <span>الرئيسية</span>
+    </a>
+    <a href="#search-form" class="mobile-nav-item" onclick="document.getElementById('search-form').scrollIntoView({behavior:'smooth'}); return false;">
+      <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+      <span>بحث مدقق</span>
+    </a>
+    <a href="#" onclick="App.goToCompare(); return false;" class="mobile-nav-item">
+      <svg viewBox="0 0 24 24"><line x1="18" y1="20" x2="18" y2="10"></line><line x1="12" y1="20" x2="12" y2="4"></line><line x1="6" y1="20" x2="6" y2="14"></line></svg>
+      <span>المقارنة</span>
+      <span id="mobile-compare-badge" class="mobile-nav-badge" style="display:none;">0</span>
+    </a>
+    <a href="/dashboard.html" class="mobile-nav-item">
+      <svg viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
+      <span>حسابي</span>
+    </a>
+  </nav>
+</body>
+</html>

@@ -1,0 +1,27 @@
+# Python Bytecode & Cache
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+
+# Testing & Coverage
+.pytest_cache/
+.coverage
+htmlcov/
+
+# Environments & local settings
+.env
+.venv/
+env/
+venv/
+ENV/
+
+# Temporary & OS files
+Thumbs.db
+.DS_Store
+*.tmp
+*.bak
+
+# Test databases
+test.db
+*.test.db

@@ -1,0 +1,429 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>تفاصيل العقار وفحص مأوى | MA'WA</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/css/design-system.css">
+  <style>
+    .property-detail-grid {
+      display: grid;
+      grid-template-columns: 2fr 1fr;
+      gap: 2rem;
+      margin-top: 2rem;
+    }
+    .gallery-main {
+      width: 100%;
+      height: 420px;
+      border-radius: var(--radius-xl);
+      overflow: hidden;
+      border: 1px solid var(--color-outline-variant);
+      box-shadow: var(--shadow-sm);
+    }
+    .gallery-main img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+    .sidebar-card {
+      background: white;
+      border-radius: var(--radius-xl);
+      padding: 1.5rem;
+      border: 1px solid var(--color-outline-variant);
+      box-shadow: var(--shadow-sm);
+      position: sticky;
+      top: 5.5rem;
+    }
+    .specs-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 1.5rem 0;
+    }
+    .specs-table td {
+      padding: 0.75rem 0;
+      border-bottom: 1px solid var(--color-surface-container);
+      font-size: 0.9rem;
+    }
+    .specs-table td:first-child {
+      color: var(--color-on-surface-variant);
+      font-weight: 600;
+    }
+    .specs-table td:last-child {
+      font-weight: 700;
+      color: var(--color-on-surface);
+      text-align: left;
+    }
+    @media (max-width: 900px) {
+      .property-detail-grid {
+        grid-template-columns: 1fr;
+      }
+      .gallery-main {
+        height: 280px;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Navigation -->
+  <header class="navbar">
+    <div class="container nav-content">
+      <a href="/" class="logo-brand">
+        <div class="logo-badge">مـ</div>
+        <div class="logo-text">
+          <span class="logo-title">مأوى | MA'WA</span>
+          <span class="logo-tagline">مكانك يبدأ بثقة — الغربية</span>
+        </div>
+      </a>
+
+      <nav>
+        <ul class="nav-links">
+          <li><a href="/" class="nav-link">الرئيسية</a></li>
+          <li><a href="/#properties-section" class="nav-link">عقارات الغربية</a></li>
+          <li><a href="#" onclick="App.goToCompare(); return false;" class="nav-link">المقارنة المحايدة <span id="compare-count-badge" class="badge badge-licensed" style="display:none; font-size:0.7rem; padding:1px 6px;">0</span></a></li>
+          <li><a href="/dashboard.html" class="nav-link">لوحة التحكم</a></li>
+        </ul>
+      </nav>
+
+      <div class="nav-actions" id="nav-auth-actions"></div>
+    </div>
+  </header>
+
+  <div class="container" style="padding-top:2rem; padding-bottom:5rem;">
+    <!-- Breadcrumb -->
+    <div style="font-size:0.85rem; color:var(--color-on-surface-variant); margin-bottom:1rem;">
+      <a href="/">الرئيسية</a> &gt; <span id="bread-city">الغربية</span> &gt; <span id="bread-title" style="font-weight:700; color:var(--color-on-surface);">تفاصيل العقار</span>
+    </div>
+
+    <div id="property-detail-container">
+      <div style="text-align:center; padding:5rem; color:var(--color-secondary);">جارٍ استرجاع بيانات العقار وفحص الحماية...</div>
+    </div>
+  </div>
+
+  <!-- Mutual Viewing Modal -->
+  <div id="viewing-modal" class="modal-overlay">
+    <div class="modal-card">
+      <div class="modal-header">
+        <h3 style="color:#0b2545;">🤝 طلب معاينة بالتراضي</h3>
+        <button class="modal-close" onclick="closeViewingModal()">&times;</button>
+      </div>
+      <p style="font-size:0.85rem; color:var(--color-on-surface-variant); margin-bottom:1rem;">
+        طلبك يذهب مباشرة إلى الوسيط المسؤول لمراجعة الموعد والتوافق. لا يُكشف عنوان العقار الدقيق إلا بعد قبول الطلب حفاظاً على خصوصية الأطراف.
+      </p>
+      <form id="viewing-form" onsubmit="submitViewingRequest(event)">
+        <div class="form-group" style="margin-bottom:1rem;">
+          <label class="form-label" for="proposed-date">الموعد المقترح للمعاينة</label>
+          <input type="datetime-local" id="proposed-date" class="form-control" required>
+        </div>
+        <div class="form-group" style="margin-bottom:1.5rem;">
+          <label class="form-label" for="buyer-message">رسالة أو استفسار للوسيط (اختياري)</label>
+          <textarea id="buyer-message" class="form-control" rows="3" placeholder="أود معاينة الشقة والتأكد من موقف رخصة البناء وعداد المياه..."></textarea>
+        </div>
+        <div style="display:flex; justify-content:flex-end; gap:0.75rem;">
+          <button type="button" onclick="closeViewingModal()" class="btn btn-secondary">إلغاء</button>
+          <button type="submit" class="btn btn-primary">إرسال الطلب الآمن</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Report Property Modal -->
+  <div id="report-modal" class="modal-overlay">
+    <div class="modal-card">
+      <div class="modal-header">
+        <h3 style="color:var(--color-error);">🚨 إبلاغ عن مخالفة عقارية</h3>
+        <button class="modal-close" onclick="closeReportModal()">&times;</button>
+      </div>
+      <p style="font-size:0.85rem; color:var(--color-on-surface-variant); margin-bottom:1rem;">
+        يراجع فريق رقابة مأوى البلاغات الصادرة بمحافظة الغربية للتحقق من مصداقية الإعلانات ومنع التلاعب والأسعار الوهمية.
+      </p>
+      <form id="report-form" onsubmit="submitPropertyReport(event)">
+        <div class="form-group" style="margin-bottom:1rem;">
+          <label class="form-label" for="report-reason">سبب البلاغ</label>
+          <select id="report-reason" class="form-control" required>
+            <option value="FAKE_PRICE">سعر وهمي غير حقيقي</option>
+            <option value="NONEXISTENT">العقار غير موجود على أرض الواقع</option>
+            <option value="MISLEADING_INFO">معلومات تراخيص مضللة أو غير مرخص</option>
+            <option value="STOLEN_IMAGES">صور مسروقة أو غير مطابقة</option>
+            <option value="SCAM">اشتباه احتيال أو طلب تحويل أموال</option>
+            <option value="OTHER">سبب آخر</option>
+          </select>
+        </div>
+        <div class="form-group" style="margin-bottom:1.5rem;">
+          <label class="form-label" for="report-details">تفاصيل المخالفة</label>
+          <textarea id="report-details" class="form-control" rows="3" placeholder="يرجى كتابة ما لاحظته بدقة لمساعدة فريق الرقابة..." required></textarea>
+        </div>
+        <div style="display:flex; justify-content:flex-end; gap:0.75rem;">
+          <button type="button" onclick="closeReportModal()" class="btn btn-secondary">إلغاء</button>
+          <button type="submit" class="btn btn-tertiary">إرسال البلاغ للتدقيق</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <script src="/js/app.js"></script>
+  <script src="/js/mawa-check.js"></script>
+  <script>
+    let currentProp = null;
+
+    async function loadPropertyDetail() {
+      const urlParams = new URLSearchParams(window.location.search);
+      const propId = urlParams.get('id');
+
+      if (!propId) {
+        window.location.href = '/';
+        return;
+      }
+
+      const container = document.getElementById('property-detail-container');
+      try {
+        const res = await fetch(`${API_BASE}/properties/${propId}`, { headers: App.getAuthHeaders() });
+        if (!res.ok) {
+          container.innerHTML = '<div style="text-align:center; padding:4rem; color:var(--color-error);">العقار غير متاح أو تم تعليقه لمخالفة المعايير.</div>';
+          return;
+        }
+
+        currentProp = await res.json();
+        document.title = `${currentProp.title} | مأوى`;
+        document.getElementById('bread-city').textContent = `${currentProp.city} - ${currentProp.district}`;
+        document.getElementById('bread-title').textContent = currentProp.title;
+
+        const mainImg = currentProp.images && currentProp.images.length > 0 ? currentProp.images[0].file_path : '/media/tanta_stadium.jpg';
+
+        container.innerHTML = `
+          <div class="property-detail-grid">
+            <!-- Left Main Column -->
+            <div>
+              <div class="gallery-main">
+                <img src="${mainImg}" alt="${currentProp.title}">
+              </div>
+
+              <div style="margin-top:2rem;">
+                <div style="display:flex; align-items:center; gap:0.5rem; margin-bottom:0.75rem;">
+                  <span class="badge badge-city">📍 ${currentProp.governorate} — ${currentProp.city} (${currentProp.district})</span>
+                  ${currentProp.agent_is_professionally_verified ? '<span class="badge badge-verified-agent">✓ وسيط مهني معتمد</span>' : ''}
+                  <span class="badge badge-licensed">🏢 ${currentProp.building_license_status}</span>
+                </div>
+
+                <h1 style="font-size:1.85rem; color:#0b2545; margin-bottom:1rem;">${currentProp.title}</h1>
+                <p style="font-size:1rem; color:var(--color-on-surface-variant); line-height:1.8; margin-bottom:2rem; white-space:pre-line;">
+                  ${currentProp.description}
+                </p>
+
+                <!-- Location Privacy Section -->
+                <div style="background:white; border-radius:var(--radius-xl); padding:1.5rem; border:1px solid var(--color-outline-variant); margin-bottom:2rem;">
+                  <h3 style="color:#0b2545; display:flex; align-items:center; gap:0.5rem; margin-bottom:0.75rem;">
+                    <span>📍 الخصوصية الجغرافية وموقع العقار</span>
+                  </h3>
+
+                  ${currentProp.has_agreed_viewing && currentProp.exact_address_private ? `
+                    <div style="background:var(--color-success-bg); border:1px solid #a3e2bb; border-radius:var(--radius-md); padding:1rem; color:#0a5a2c; margin-bottom:1rem;">
+                      <strong>العنوان التفصيلي الصريح (تمت الموافقة على المعاينة):</strong><br>
+                      ${currentProp.exact_address_private}
+                      ${currentProp.agent_phone_private ? `<br><strong>هاتف الوسيط للتنسيق:</strong> ${currentProp.agent_phone_private}` : ''}
+                    </div>
+                  ` : `
+                    <div style="background:var(--color-surface-low); border:1px solid var(--color-outline-variant); border-radius:var(--radius-md); padding:1rem; color:var(--color-on-surface-variant); margin-bottom:1rem; font-size:0.88rem;">
+                      <strong>🔒 حماية العنوان الدقيق:</strong> الموقع التقريبي معروض على خريطة الحي (${currentProp.city} - ${currentProp.district}). يُكشف العنوان التفصيلي ورقم الطابق بعد قبول طلب المعاينة بالتراضي لمنع المضايقات وحماية خصوصية العقار.
+                    </div>
+                  `}
+
+                  <div style="background:#eaf2fb; border-radius:var(--radius-md); padding:1.25rem; text-align:center;">
+                    <div style="font-size:0.85rem; font-weight:700; color:var(--color-primary);">
+                      الإحداثيات التقريبية العامة: ${currentProp.approx_lat.toFixed(3)}, ${currentProp.approx_lng.toFixed(3)}
+                    </div>
+                    <div style="font-size:0.8rem; color:var(--color-secondary); margin-top:4px;">
+                      نطاق حي ${currentProp.district}، محافظة الغربية
+                    </div>
+                  </div>
+                </div>
+
+                <!-- MA'WA Check Interactive Card -->
+                <div style="background:linear-gradient(135deg, #f0f7ff, #ffffff); border-radius:var(--radius-xl); padding:1.5rem; border:1px solid #b8d7fb; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:1rem;">
+                  <div>
+                    <h3 style="color:var(--color-primary); margin-bottom:0.3rem;">🛡️ دليل فحص مأوى للمشتري</h3>
+                    <p style="font-size:0.85rem; color:var(--color-on-surface-variant);">
+                      تحقق من 7 نقاط قانونية وفنية جوهرية قبل دفع أي مقدم أو التوقيع على عقود.
+                    </p>
+                  </div>
+                  <button onclick="MawaCheck.openModal(currentProp)" class="btn btn-primary">
+                    فتح قائمة الفحص الذكي
+                  </button>
+                </div>
+              </div>
+            </div>
+
+            <!-- Right Sticky Sidebar -->
+            <div>
+              <div class="sidebar-card">
+                <div style="font-size:0.85rem; color:var(--color-on-surface-variant); margin-bottom:0.25rem;">السعر الإجمالي المطلوب</div>
+                <div style="font-size:2rem; font-weight:800; color:var(--color-primary); margin-bottom:0.5rem;">
+                  ${currentProp.price.toLocaleString()} <span style="font-size:1rem; font-weight:600;">ج.م</span>
+                </div>
+                <div style="background:var(--color-surface-low); padding:0.6rem 0.8rem; border-radius:var(--radius-md); font-size:0.85rem; margin-bottom:1.5rem; display:flex; justify-content:space-between;">
+                  <span>سعر المتر الصافي:</span>
+                  <strong style="color:#0b2545;">${currentProp.price_per_sqm.toLocaleString()} ج.م / م²</strong>
+                </div>
+
+                <div style="display:flex; flex-direction:column; gap:0.75rem;">
+                  <button onclick="openViewingModal()" class="btn btn-primary" style="width:100%; padding:0.85rem;">
+                    🤝 طلب معاينة بالتراضي
+                  </button>
+                  <button onclick="App.toggleCompare('${currentProp.id}')" class="btn btn-secondary" style="width:100%;">
+                    ⚖️ إضافة للمقارنة الفنية
+                  </button>
+                  <button onclick="openReportModal()" class="btn btn-outline btn-sm" style="color:var(--color-error); border-color:var(--color-error);">
+                    🚨 إبلاغ عن معلومات غير صحيحة
+                  </button>
+                </div>
+
+                <table class="specs-table">
+                  <tr>
+                    <td>المساحة الكلية</td>
+                    <td>${currentProp.area_sqm} م²</td>
+                  </tr>
+                  <tr>
+                    <td>الغرف والحمامات</td>
+                    <td>${currentProp.bedrooms} نوم | ${currentProp.bathrooms} حمام</td>
+                  </tr>
+                  <tr>
+                    <td>الدور ومجموع الأدوار</td>
+                    <td>الدور ${currentProp.floor} من ${currentProp.total_floors}</td>
+                  </tr>
+                  <tr>
+                    <td>المصعد والباركينج</td>
+                    <td>${currentProp.elevator ? '✓ مصعد' : 'بدون مصعد'} | ${currentProp.parking ? '✓ جراج' : 'بدون'}</td>
+                  </tr>
+                  <tr>
+                    <td>مستوى التشطيب</td>
+                    <td>${currentProp.finishing}</td>
+                  </tr>
+                  <tr>
+                    <td>موقف الترخيص</td>
+                    <td>${currentProp.building_license_status}</td>
+                  </tr>
+                  <tr>
+                    <td>حصة الأرض</td>
+                    <td>${currentProp.land_share || 'مثبتة بالعقد'}</td>
+                  </tr>
+                  <tr>
+                    <td>وديعة الصيانة</td>
+                    <td>${currentProp.maintenance_deposit ? currentProp.maintenance_deposit.toLocaleString() + ' ج.م' : 'لا يوجد'}</td>
+                  </tr>
+                  <tr>
+                    <td>الوسيط المسؤول</td>
+                    <td>${currentProp.agent_name}</td>
+                  </tr>
+                </table>
+              </div>
+            </div>
+          </div>
+
+          <!-- Mobile Sticky Bottom Action Bar -->
+          <div class="mobile-sticky-action-bar">
+            <div class="mobile-sticky-price">
+              <span class="mobile-sticky-price-val">${currentProp.price.toLocaleString()} ج.م</span>
+              <span class="mobile-sticky-price-sub">سعر المتر: ${Math.round(currentProp.price / currentProp.area_sqm).toLocaleString()} ج.م</span>
+            </div>
+            <button onclick="openViewingModal()" class="mobile-sticky-btn">
+              <span>🤝 طلب معاينة</span>
+            </button>
+          </div>
+        `;
+        document.body.classList.add('has-sticky-action');
+      } catch (err) {
+        console.error(err);
+        container.innerHTML = '<div style="text-align:center; padding:4rem; color:var(--color-error);">حدث خطأ أثناء تحميل بيانات العقار.</div>';
+      }
+    }
+
+    function openViewingModal() {
+      if (!App.user) {
+        App.showToast('يرجى تسجيل الدخول أولاً لتتمكن من طلب معاينة العقار', 'error');
+        setTimeout(() => window.location.href = '/login.html', 1500);
+        return;
+      }
+      document.getElementById('viewing-modal').classList.add('active');
+    }
+
+    function closeViewingModal() {
+      document.getElementById('viewing-modal').classList.remove('active');
+    }
+
+    async function submitViewingRequest(e) {
+      e.preventDefault();
+      const proposedDate = document.getElementById('proposed-date').value;
+      const buyerMessage = document.getElementById('buyer-message').value;
+
+      try {
+        const res = await fetch(`${API_BASE}/contact-requests`, {
+          method: 'POST',
+          headers: App.getAuthHeaders(),
+          body: JSON.stringify({
+            property_id: currentProp.id,
+            proposed_date: proposedDate ? new Date(proposedDate).toISOString() : null,
+            buyer_message: buyerMessage
+          })
+        });
+
+        const data = await res.json();
+        if (res.ok) {
+          closeViewingModal();
+          App.showToast('تم إرسال طلب المعاينة للوسيط بنجاح! ستتلقى إشعاراً عند القبول');
+        } else {
+          App.showToast(data.detail || 'تعذر إرسال الطلب', 'error');
+        }
+      } catch (err) {
+        App.showToast('فشل الاتصال بالخادم', 'error');
+      }
+    }
+
+    function openReportModal() {
+      if (!App.user) {
+        App.showToast('يرجى تسجيل الدخول لتقديم بلاغ مدقق', 'error');
+        return;
+      }
+      document.getElementById('report-modal').classList.add('active');
+    }
+
+    function closeReportModal() {
+      document.getElementById('report-modal').classList.remove('active');
+    }
+
+    async function submitPropertyReport(e) {
+      e.preventDefault();
+      const reason = document.getElementById('report-reason').value;
+      const details = document.getElementById('report-details').value;
+
+      try {
+        const res = await fetch(`${API_BASE}/reports`, {
+          method: 'POST',
+          headers: App.getAuthHeaders(),
+          body: JSON.stringify({
+            property_id: currentProp.id,
+            reason: reason,
+            details: details
+          })
+        });
+
+        const data = await res.json();
+        if (res.ok) {
+          closeReportModal();
+          App.showToast('تم استلام البلاغ وسيتم مراجعته من قبل إدارة مأوى بدقة');
+        } else {
+          App.showToast(data.detail || 'تعذر إرسال البلاغ', 'error');
+        }
+      } catch (err) {
+        App.showToast('فشل إرسال البلاغ', 'error');
+      }
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+      loadPropertyDetail();
+    });
+  </script>
+</body>
+</html>
