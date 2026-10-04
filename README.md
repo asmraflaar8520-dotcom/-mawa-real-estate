@@ -5,6 +5,23 @@
 
 ---
 
+## 🌐 تجربة المنصة مباشرة (Live Demo & Mobile Access)
+
+<div align="center">
+  <img src="qr_code.png" width="220" alt="MAWA QR Code" />
+  <br>
+  <p><strong>امسح الكود بكاميرا هاتفك لفتح المنصة مباشرة 📱</strong></p>
+  <p>
+    🔗 <strong>الرابط المباشر السريع:</strong> <a href="https://peak-apparel-venues-dynamic.trycloudflare.com">https://peak-apparel-venues-dynamic.trycloudflare.com</a>
+  </p>
+  <p>
+    🏷️ <strong>الرابط المخصص:</strong> <a href="https://mawa-eg.loca.lt">https://mawa-eg.loca.lt</a> <br>
+    <small>*(كود المرور لأول مرة في الرابط المخصص: <code>156.221.85.12</code>)*</small>
+  </p>
+</div>
+
+---
+
 ## 🏛️ عن المنظومة (Project Vision & Core Principles)
 
 **مأوى (MA'WA)** هي منصة عقارية مصرية مبنية وفق أعلى المعايير الهندسية ومعايير الأمن السيبراني المتقدمة (Clean Modular Monolith)، تهدف إلى إعادة الانضباط والشفافية لسوق العقارات بمحافظة الغربية من خلال:
