@@ -16,8 +16,20 @@ const MawaCheck = {
       modal = document.createElement('div');
       modal.id = 'mawa-check-modal';
       modal.className = 'modal-overlay';
+      modal.setAttribute('role', 'dialog');
+      modal.setAttribute('aria-modal', 'true');
+      modal.setAttribute('aria-labelledby', 'mawa-check-modal-title');
       document.body.appendChild(modal);
+
+      // Keyboard accessibility: Close on Escape
+      document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape' && modal.classList.contains('active')) {
+          MawaCheck.closeModal();
+        }
+      });
     }
+
+    const safePropId = propertyData ? App.escapeHtml(propertyData.id) : '';
 
     const itemsHtml = this.questions.map((q, idx) => `
       <div class="checklist-item" style="display:flex; gap:0.75rem; align-items:flex-start; margin-bottom:0.75rem;">
@@ -33,7 +45,7 @@ const MawaCheck = {
       <div class="modal-card">
         <div class="modal-header">
           <div>
-            <h3 style="color:var(--color-primary); display:flex; align-items:center; gap:0.5rem;">
+            <h3 id="mawa-check-modal-title" style="color:var(--color-primary); display:flex; align-items:center; gap:0.5rem;">
               <span>🛡️ فحص مأوى الذكي</span>
               <span style="font-size:0.75rem; background:#e0ecfb; color:var(--color-primary); padding:2px 8px; border-radius:var(--radius-full);">إرشادي وتوعوي</span>
             </h3>
@@ -41,7 +53,7 @@ const MawaCheck = {
               قائمة التحقق الموصى بها قبل طلب المعاينة أو إتمام أي تعاقد عقاري بمحافظة الغربية.
             </p>
           </div>
-          <button class="modal-close" onclick="MawaCheck.closeModal()">&times;</button>
+          <button class="modal-close" onclick="MawaCheck.closeModal()" aria-label="إغلاق النافذة">&times;</button>
         </div>
 
         <div style="margin-bottom:1rem; padding:0.75rem; background:#fef9ee; border-radius:var(--radius-md); border:1px solid #f6d289; font-size:0.82rem; color:#855502;">
@@ -56,7 +68,7 @@ const MawaCheck = {
           <span id="check-counter" style="font-size:0.85rem; font-weight:700; color:var(--color-secondary);">
             تم إكمال 0 من ${this.questions.length} عناصر
           </span>
-          <button onclick="MawaCheck.confirmAndProceed('${propertyData ? propertyData.id : ''}')" class="btn btn-primary btn-sm">
+          <button onclick="MawaCheck.confirmAndProceed('${safePropId}')" class="btn btn-primary btn-sm">
             متابعة المعاينة بالتراضي
           </button>
         </div>

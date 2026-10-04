@@ -4,9 +4,26 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>المقارنة الفنية المحايدة بين العقارات | MA'WA</title>
+  <meta name="description" content="أداة المقارنة الفنية المحايدة بين عقارات محافظة الغربية (طنطا، المحلة، زفتى). قارن سعر المتر، وحصة الأرض، وموقف التراخيص جنباً إلى جنب.">
+  <link rel="canonical" href="https://mawa-real-estate.vercel.app/compare.html">
+  <meta property="og:type" content="website">
+  <meta property="og:locale" content="ar_EG">
+  <meta property="og:site_name" content="مأوى | MA'WA">
+  <meta property="og:title" content="المقارنة الفنية المحايدة بين العقارات | MA'WA">
+  <meta property="og:description" content="قارن مواصفات عقارات محافظة الغربية جنباً إلى جنب بحيادية تامة وسعر المتر الصافي.">
+  <meta property="og:url" content="https://mawa-real-estate.vercel.app/compare.html">
+  <meta property="og:image" content="https://mawa-real-estate.vercel.app/media/tanta_stadium.jpg">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="المقارنة الفنية المحايدة بين العقارات | MA'WA">
+  <meta name="twitter:description" content="قارن مواصفات عقارات محافظة الغربية جنباً إلى جنب بحيادية تامة وسعر المتر الصافي.">
+  <meta name="twitter:image" content="https://mawa-real-estate.vercel.app/media/tanta_stadium.jpg">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&family=Inter:wght@400;500;600;700&display=swap">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&family=Inter:wght@400;500;600;700&display=swap" media="print" onload="this.media='all'">
+  <noscript>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&family=Inter:wght@400;500;600;700&display=swap">
+  </noscript>
   <link rel="stylesheet" href="/css/design-system.css">
   <style>
     .comparison-grid {
@@ -49,6 +66,9 @@
 </head>
 <body>
 
+  <!-- Skip Link -->
+  <a href="#main-content" class="skip-link">تخطي إلى المحتوى الرئيسي</a>
+
   <!-- Navigation -->
   <header class="navbar">
     <div class="container nav-content">
@@ -60,7 +80,7 @@
         </div>
       </a>
 
-      <nav>
+      <nav aria-label="التنقل الرئيسي">
         <ul class="nav-links">
           <li><a href="/" class="nav-link">الرئيسية</a></li>
           <li><a href="/#properties-section" class="nav-link">عقارات الغربية</a></li>
@@ -73,6 +93,8 @@
     </div>
   </header>
 
+  <!-- Main Landmark -->
+  <main id="main-content">
   <div class="container" style="padding-top:2.5rem; padding-bottom:5rem;">
     <div style="display:flex; justify-content:space-between; align-items:flex-end; flex-wrap:wrap; gap:1rem; margin-bottom:1.5rem;">
       <div>
@@ -94,8 +116,9 @@
       <div style="text-align:center; padding:4rem; color:var(--color-secondary);">جارٍ تحليل ومعالجة المقارنة...</div>
     </div>
   </div>
+  </main>
 
-  <script src="/js/app.js"></script>
+  <script src="/js/app.js" defer></script>
   <script>
     async function loadComparison() {
       const urlParams = new URLSearchParams(window.location.search);
@@ -121,11 +144,11 @@
       }
 
       try {
-        const res = await fetch(`${API_BASE}/properties/compare?ids=${idsStr}`);
+        const res = await fetch(`${API_BASE}/properties/compare?ids=${encodeURIComponent(idsStr)}`);
         const items = await res.json();
 
         if (!res.ok || items.length < 2) {
-          wrapper.innerHTML = `<div style="text-align:center; padding:3rem; color:var(--color-error);">${items.detail || 'تعذر تحميل بيانات المقارنة'}</div>`;
+          wrapper.innerHTML = `<div style="text-align:center; padding:3rem; color:var(--color-error);">${App.escapeHtml(items.detail) || 'تعذر تحميل بيانات المقارنة'}</div>`;
           return;
         }
 
@@ -141,20 +164,27 @@
     function renderTable(items) {
       const wrapper = document.getElementById('comparison-wrapper');
 
-      const headersHtml = items.map(item => `
-        <div class="col-header">
-          <img src="${item.primary_image || '/media/tanta_stadium.jpg'}" style="width:100%; height:140px; object-fit:cover; border-radius:var(--radius-md); margin-bottom:0.75rem;">
-          <h4 style="font-size:1rem; margin-bottom:0.4rem; color:#0b2545;">
-            <a href="/property.html?id=${item.id}">${item.title}</a>
-          </h4>
-          <div style="font-size:1.15rem; font-weight:800; color:var(--color-primary); margin-bottom:0.5rem;">
-            ${item.price.toLocaleString()} ج.م
+      const headersHtml = items.map(item => {
+        const safeImg = App.sanitizeUrl(item.primary_image || '/media/tanta_stadium.jpg');
+        const safeTitle = App.escapeHtml(item.title);
+        const safeId = App.escapeHtml(item.id);
+        const safePrice = Number(item.price || 0).toLocaleString();
+
+        return `
+          <div class="col-header">
+            <img src="${safeImg}" alt="${safeTitle}" width="220" height="140" style="width:100%; height:140px; object-fit:cover; border-radius:var(--radius-md); margin-bottom:0.75rem;">
+            <h4 style="font-size:1rem; margin-bottom:0.4rem; color:#0b2545;">
+              <a href="/property.html?id=${safeId}">${safeTitle}</a>
+            </h4>
+            <div style="font-size:1.15rem; font-weight:800; color:var(--color-primary); margin-bottom:0.5rem;">
+              ${safePrice} ج.م
+            </div>
+            <a href="/property.html?id=${safeId}" class="btn btn-primary btn-sm" style="width:100%;">
+              طلب معاينة
+            </a>
           </div>
-          <a href="/property.html?id=${item.id}" class="btn btn-primary btn-sm" style="width:100%;">
-            طلب معاينة
-          </a>
-        </div>
-      `).join('');
+        `;
+      }).join('');
 
       const buildRow = (label, getter) => `
         <div class="col-label">${label}</div>
@@ -167,15 +197,15 @@
             <div class="col-label" style="background:#0b2545; color:white; font-size:1rem;">عنصر المقارنة</div>
             ${headersHtml}
 
-            ${buildRow('الموقع والحي', it => `📍 ${it.city} — ${it.district}`)}
-            ${buildRow('المساحة الكلية', it => `<strong>${it.area_sqm} م²</strong>`)}
-            ${buildRow('سعر المتر الصافي', it => `<strong style="color:var(--color-primary);">${it.price_per_sqm.toLocaleString()} ج.م / م²</strong>`)}
-            ${buildRow('تقسيم الغرف', it => `${it.bedrooms} نوم | ${it.bathrooms} حمام`)}
-            ${buildRow('الدور والمصعد', it => `الدور ${it.floor} من ${it.total_floors} (${it.elevator ? '✓ مصعد' : 'بدون مصعد'})`)}
-            ${buildRow('مستوى التشطيب', it => it.finishing)}
-            ${buildRow('موقف رخصة البناء', it => `<span style="color:#0d8a43; font-weight:700;">✓ ${it.building_license_status}</span>`)}
-            ${buildRow('حصة الأرض بالعقد', it => it.land_share || 'مثبتة بالعقد المسجل')}
-            ${buildRow('وديعة الصيانة', it => it.maintenance_deposit ? it.maintenance_deposit.toLocaleString() + ' ج.م' : 'لا يوجد')}
+            ${buildRow('الموقع والحي', it => `📍 ${App.escapeHtml(it.city)} — ${App.escapeHtml(it.district)}`)}
+            ${buildRow('المساحة الكلية', it => `<strong>${Number(it.area_sqm || 0)} م²</strong>`)}
+            ${buildRow('سعر المتر الصافي', it => `<strong style="color:var(--color-primary);">${Number(it.price_per_sqm || 0).toLocaleString()} ج.م / م²</strong>`)}
+            ${buildRow('تقسيم الغرف', it => `${Number(it.bedrooms || 0)} نوم | ${Number(it.bathrooms || 0)} حمام`)}
+            ${buildRow('الدور والمصعد', it => `الدور ${Number(it.floor || 0)} من ${Number(it.total_floors || 0)} (${it.elevator ? '✓ مصعد' : 'بدون مصعد'})`)}
+            ${buildRow('مستوى التشطيب', it => App.escapeHtml(it.finishing))}
+            ${buildRow('موقف رخصة البناء', it => `<span style="color:#0d8a43; font-weight:700;">✓ ${App.escapeHtml(it.building_license_status)}</span>`)}
+            ${buildRow('حصة الأرض بالعقد', it => App.escapeHtml(it.land_share || 'مثبتة بالعقد المسجل'))}
+            ${buildRow('وديعة الصيانة', it => it.maintenance_deposit ? Number(it.maintenance_deposit).toLocaleString() + ' ج.م' : 'لا يوجد')}
             ${buildRow('توثيق الوسيط', it => it.agent_is_professionally_verified ? '<span class="badge badge-verified-agent">✓ وسيط مهني معتمد</span>' : 'وسيط مسجل')}
           </div>
         </div>

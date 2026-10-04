@@ -5,12 +5,57 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>مأوى | MA'WA — عقارات محافظة الغربية (مكانك يبدأ بثقة)</title>
   <meta name="description" content="المنصة العقارية الموثوقة الأولى لمحافظة الغربية (طنطا، المحلة الكبرى، زفتى). فحص مأوى، مقارنة فنية محايدة، وحماية خصوصية المعاينة.">
+  <link rel="canonical" href="https://mawa-real-estate.vercel.app/">
+  <meta property="og:type" content="website">
+  <meta property="og:locale" content="ar_EG">
+  <meta property="og:site_name" content="مأوى | MA'WA">
+  <meta property="og:title" content="مأوى | MA'WA — عقارات محافظة الغربية (مكانك يبدأ بثقة)">
+  <meta property="og:description" content="المنصة العقارية الموثوقة الأولى لمحافظة الغربية (طنطا، المحلة الكبرى، زفتى). فحص مأوى، مقارنة فنية محايدة، وحماية خصوصية المعاينة.">
+  <meta property="og:url" content="https://mawa-real-estate.vercel.app/">
+  <meta property="og:image" content="https://mawa-real-estate.vercel.app/media/tanta_stadium.jpg">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="مأوى | MA'WA — عقارات محافظة الغربية (مكانك يبدأ بثقة)">
+  <meta name="twitter:description" content="المنصة العقارية الموثوقة الأولى لمحافظة الغربية (طنطا، المحلة الكبرى، زفتى). فحص مأوى، مقارنة فنية محايدة، وحماية خصوصية المعاينة.">
+  <meta name="twitter:image" content="https://mawa-real-estate.vercel.app/media/tanta_stadium.jpg">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&family=Inter:wght@400;500;600;700&display=swap">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&family=Inter:wght@400;500;600;700&display=swap" media="print" onload="this.media='all'">
+  <noscript>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&family=Inter:wght@400;500;600;700&display=swap">
+  </noscript>
   <link rel="stylesheet" href="/css/design-system.css">
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@graph": [
+      {
+        "@type": "WebSite",
+        "@id": "https://mawa-real-estate.vercel.app/#website",
+        "url": "https://mawa-real-estate.vercel.app/",
+        "name": "مأوى | MA'WA",
+        "description": "المنصة العقارية المعتمدة لمحافظة الغربية — طنطا، المحلة الكبرى، زفتى",
+        "inLanguage": "ar"
+      },
+      {
+        "@type": "RealEstateAgent",
+        "@id": "https://mawa-real-estate.vercel.app/#organization",
+        "name": "منصة مأوى العقارية",
+        "url": "https://mawa-real-estate.vercel.app/",
+        "logo": "https://mawa-real-estate.vercel.app/media/tanta_stadium.jpg",
+        "areaServed": {
+          "@type": "AdministrativeArea",
+          "name": "Gharbia Governorate, Egypt"
+        }
+      }
+    ]
+  }
+  </script>
 </head>
 <body>
+
+  <!-- Skip Link -->
+  <a href="#main-content" class="skip-link">تخطي إلى المحتوى الرئيسي</a>
 
   <!-- Navigation -->
   <header class="navbar">
@@ -23,7 +68,7 @@
         </div>
       </a>
 
-      <nav>
+      <nav aria-label="التنقل الرئيسي">
         <ul class="nav-links">
           <li><a href="/" class="nav-link active">الرئيسية</a></li>
           <li><a href="#properties-section" class="nav-link">عقارات الغربية</a></li>
@@ -37,6 +82,9 @@
       </div>
     </div>
   </header>
+
+  <!-- Main Landmark -->
+  <main id="main-content">
 
   <!-- Hero Section -->
   <section class="hero">
@@ -165,6 +213,7 @@
       <!-- Injected via JavaScript -->
     </div>
   </section>
+  </main>
 
   <!-- Footer -->
   <footer style="background:#0b2545; color:white; padding:3rem 0 2rem 0; margin-top:4rem;">
@@ -197,8 +246,8 @@
     </div>
   </footer>
 
-  <script src="/js/app.js"></script>
-  <script src="/js/mawa-check.js"></script>
+  <script src="/js/app.js" defer></script>
+  <script src="/js/mawa-check.js" defer></script>
   <script>
     async function loadProperties() {
       const city = document.getElementById('filter-city').value;
@@ -236,49 +285,60 @@
 
         container.innerHTML = properties.map(p => {
           const isComparing = App.compareList.includes(p.id);
-          const primaryImg = p.images && p.images.length > 0 ? p.images[0].file_path : '/media/tanta_stadium.jpg';
+          const rawImg = p.images && p.images.length > 0 ? p.images[0].file_path : '/media/tanta_stadium.jpg';
+          const primaryImg = App.sanitizeUrl(rawImg);
+          const safeId = App.escapeHtml(p.id);
+          const safeTitle = App.escapeHtml(p.title);
+          const safeCity = App.escapeHtml(p.city);
+          const safeDistrict = App.escapeHtml(p.district);
+          const safeLicense = App.escapeHtml(p.building_license_status);
+          const safePrice = Number(p.price || 0).toLocaleString();
+          const safePricePerSqm = Number(p.price_per_sqm || 0).toLocaleString();
+          const safeArea = Number(p.area_sqm || 0);
+          const safeBeds = Number(p.bedrooms || 0);
+          const safeBaths = Number(p.bathrooms || 0);
 
           return `
             <div class="property-card">
               <div class="property-image-wrapper">
-                <img src="${primaryImg}" alt="${p.title}" class="property-image" loading="lazy">
+                <img src="${primaryImg}" alt="${safeTitle}" class="property-image" loading="lazy" width="400" height="220">
                 <div class="property-price-tag">
-                  ${p.price.toLocaleString()} ج.م
+                  ${safePrice} ج.م
                 </div>
                 <div class="property-badges">
-                  <span class="badge badge-city">📍 ${p.city} - ${p.district}</span>
+                  <span class="badge badge-city">📍 ${safeCity} - ${safeDistrict}</span>
                   ${p.agent_is_professionally_verified ? '<span class="badge badge-verified-agent">✓ وسيط مهني معتمد</span>' : ''}
                 </div>
               </div>
 
               <div class="property-content">
                 <div class="property-location">
-                  <span>🏢 ${p.building_license_status}</span>
+                  <span>🏢 ${safeLicense}</span>
                 </div>
                 <h3 class="property-title">
-                  <a href="/property.html?id=${p.id}">${p.title}</a>
+                  <a href="/property.html?id=${safeId}">${safeTitle}</a>
                 </h3>
 
                 <div class="property-specs">
                   <div class="spec-item">
                     <span class="spec-label">المساحة</span>
-                    <span class="spec-value">${p.area_sqm} م²</span>
+                    <span class="spec-value">${safeArea} م²</span>
                   </div>
                   <div class="spec-item">
                     <span class="spec-label">سعر المتر</span>
-                    <span class="spec-value">${p.price_per_sqm.toLocaleString()} ج.م</span>
+                    <span class="spec-value">${safePricePerSqm} ج.م</span>
                   </div>
                   <div class="spec-item">
                     <span class="spec-label">الغرف</span>
-                    <span class="spec-value">${p.bedrooms} نوم | ${p.bathrooms} حمام</span>
+                    <span class="spec-value">${safeBeds} نوم | ${safeBaths} حمام</span>
                   </div>
                 </div>
 
                 <div class="property-footer">
-                  <button onclick="App.toggleCompare('${p.id}'); loadProperties();" class="btn ${isComparing ? 'btn-tertiary' : 'btn-secondary'} btn-sm">
+                  <button onclick="App.toggleCompare('${safeId}'); loadProperties();" class="btn ${isComparing ? 'btn-tertiary' : 'btn-secondary'} btn-sm">
                     ${isComparing ? '✓ بالمقارنة' : '⚖️ أضف للمقارنة'}
                   </button>
-                  <a href="/property.html?id=${p.id}" class="btn btn-primary btn-sm">
+                  <a href="/property.html?id=${safeId}" class="btn btn-primary btn-sm">
                     تفاصيل وفحص مأوى
                   </a>
                 </div>

@@ -4,9 +4,16 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>لوحة التحكم والطلبات | مأوى</title>
+  <meta name="description" content="لوحة تحكم منصة مأوى العقارية — متابعة طلبات المعاينة بالتراضي، إدارة الإعلانات العقارية وتوثيق الاعتماد المهني.">
+  <meta name="robots" content="noindex, nofollow">
+  <link rel="canonical" href="https://mawa-real-estate.vercel.app/dashboard.html">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&family=Inter:wght@400;500;600;700&display=swap">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&family=Inter:wght@400;500;600;700&display=swap" media="print" onload="this.media='all'">
+  <noscript>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&family=Inter:wght@400;500;600;700&display=swap">
+  </noscript>
   <link rel="stylesheet" href="/css/design-system.css">
   <style>
     .dashboard-tabs {
@@ -54,6 +61,9 @@
 </head>
 <body>
 
+  <!-- Skip Link -->
+  <a href="#main-content" class="skip-link">تخطي إلى المحتوى الرئيسي</a>
+
   <!-- Navigation -->
   <header class="navbar">
     <div class="container nav-content">
@@ -65,7 +75,7 @@
         </div>
       </a>
 
-      <nav>
+      <nav aria-label="التنقل الرئيسي">
         <ul class="nav-links">
           <li><a href="/" class="nav-link">الرئيسية</a></li>
           <li><a href="/#properties-section" class="nav-link">عقارات الغربية</a></li>
@@ -78,6 +88,8 @@
     </div>
   </header>
 
+  <!-- Main Landmark -->
+  <main id="main-content">
   <div class="container" style="padding-top:2.5rem; padding-bottom:5rem;">
     <!-- Profile Header Card -->
     <div class="dash-card" style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:1.5rem;">
@@ -125,11 +137,11 @@
           <form id="new-prop-form" onsubmit="submitNewProperty(event)">
             <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap:1rem; margin-bottom:1rem;">
               <div class="form-group">
-                <label class="form-label">عنوان الإعلان</label>
+                <label class="form-label" for="prop-title">عنوان الإعلان</label>
                 <input type="text" id="prop-title" class="form-control" placeholder="شقة فاخرة بشارع الاستاد" required minlength="5">
               </div>
               <div class="form-group">
-                <label class="form-label">المدينة</label>
+                <label class="form-label" for="prop-city">المدينة</label>
                 <select id="prop-city" class="form-control" required>
                   <option value="طنطا">طنطا</option>
                   <option value="المحلة الكبرى">المحلة الكبرى</option>
@@ -137,51 +149,51 @@
                 </select>
               </div>
               <div class="form-group">
-                <label class="form-label">الحي / المنطقة</label>
+                <label class="form-label" for="prop-district">الحي / المنطقة</label>
                 <input type="text" id="prop-district" class="form-control" placeholder="الاستاد، شكري القوتلي" required>
               </div>
               <div class="form-group">
-                <label class="form-label">السعر الإجمالي (ج.م)</label>
+                <label class="form-label" for="prop-price">السعر الإجمالي (ج.م)</label>
                 <input type="number" id="prop-price" class="form-control" placeholder="2500000" required min="10000">
               </div>
               <div class="form-group">
-                <label class="form-label">المساحة (م²)</label>
+                <label class="form-label" for="prop-area">المساحة (م²)</label>
                 <input type="number" id="prop-area" class="form-control" placeholder="150" required min="10">
               </div>
               <div class="form-group">
-                <label class="form-label">عدد الغرف</label>
+                <label class="form-label" for="prop-bedrooms">عدد الغرف</label>
                 <input type="number" id="prop-bedrooms" class="form-control" value="3" min="0">
               </div>
               <div class="form-group">
-                <label class="form-label">عدد الحمامات</label>
+                <label class="form-label" for="prop-bathrooms">عدد الحمامات</label>
                 <input type="number" id="prop-bathrooms" class="form-control" value="2" min="1">
               </div>
               <div class="form-group">
-                <label class="form-label">الدور</label>
+                <label class="form-label" for="prop-floor">الدور</label>
                 <input type="number" id="prop-floor" class="form-control" value="3" min="0">
               </div>
               <div class="form-group">
-                <label class="form-label">إجمالي الأدوار</label>
+                <label class="form-label" for="prop-total-floors">إجمالي الأدوار</label>
                 <input type="number" id="prop-total-floors" class="form-control" value="8" min="1">
               </div>
               <div class="form-group">
-                <label class="form-label">التشطيب</label>
+                <label class="form-label" for="prop-finishing">التشطيب</label>
                 <input type="text" id="prop-finishing" class="form-control" value="ألترا سوبر لوكس">
               </div>
               <div class="form-group">
-                <label class="form-label">موقف رخصة البناء</label>
+                <label class="form-label" for="prop-license">موقف رخصة البناء</label>
                 <input type="text" id="prop-license" class="form-control" placeholder="مرخص بالكامل (حي أول طنطا)" required>
               </div>
             </div>
 
             <!-- Private Exact Address -->
             <div class="form-group" style="margin-bottom:1rem;">
-              <label class="form-label">العنوان التفصيلي الدقيق (محمي وخاص — يظهر فقط بعد قبول المعاينة)</label>
+              <label class="form-label" for="prop-exact-address">العنوان التفصيلي الدقيق (محمي وخاص — يظهر فقط بعد قبول المعاينة)</label>
               <input type="text" id="prop-exact-address" class="form-control" placeholder="رقم العمارة، اسم الشارع، رقم الشقة..." required minlength="5">
             </div>
 
             <div class="form-group" style="margin-bottom:1.5rem;">
-              <label class="form-label">الوصف الكامل والمواصفات</label>
+              <label class="form-label" for="prop-desc">الوصف الكامل والمواصفات</label>
               <textarea id="prop-desc" class="form-control" rows="3" placeholder="مواصفات العقار، العدادات، الوديعة..." required minlength="10"></textarea>
             </div>
 
@@ -276,8 +288,9 @@
     </div>
 
   </div>
+  </main>
 
-  <script src="/js/app.js"></script>
+  <script src="/js/app.js" defer></script>
   <script>
     if (!App.user) {
       window.location.href = '/login.html';
@@ -337,16 +350,25 @@
 
         container.innerHTML = list.map(req => {
           const isAgentOrAdmin = App.user.id === req.agent_id || App.user.role === 'ADMIN';
+          const safePropId = App.escapeHtml(req.property_id);
+          const safePropTitle = App.escapeHtml(req.property_title);
+          const safeCity = App.escapeHtml(req.property_city);
+          const safeDistrict = App.escapeHtml(req.property_district);
+          const safeBuyer = App.escapeHtml(req.buyer_name);
+          const safeAgent = App.escapeHtml(req.agent_name);
+          const safeMsg = req.buyer_message ? App.escapeHtml(req.buyer_message) : '';
+          const safeReqId = App.escapeHtml(req.id);
+
           return `
             <div style="background:var(--color-surface-low); border:1px solid var(--color-outline-variant); border-radius:var(--radius-md); padding:1rem; margin-bottom:1rem; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:1rem;">
               <div>
                 <h4 style="color:#0b2545; margin-bottom:0.25rem;">
-                  <a href="/property.html?id=${req.property_id}">${req.property_title}</a>
+                  <a href="/property.html?id=${safePropId}">${safePropTitle}</a>
                 </h4>
                 <div style="font-size:0.85rem; color:var(--color-secondary);">
-                  الموقع: ${req.property_city} — ${req.property_district} | المشتري: ${req.buyer_name} | الوسيط: ${req.agent_name}
+                  الموقع: ${safeCity} — ${safeDistrict} | المشتري: ${safeBuyer} | الوسيط: ${safeAgent}
                 </div>
-                ${req.buyer_message ? `<div style="font-size:0.82rem; color:var(--color-on-surface); margin-top:0.4rem; background:white; padding:0.4rem 0.6rem; border-radius:var(--radius-sm);">💬 "${req.buyer_message}"</div>` : ''}
+                ${safeMsg ? `<div style="font-size:0.82rem; color:var(--color-on-surface); margin-top:0.4rem; background:white; padding:0.4rem 0.6rem; border-radius:var(--radius-sm);">💬 "${safeMsg}"</div>` : ''}
                 ${req.proposed_date ? `<div style="font-size:0.8rem; color:#0b2545; margin-top:0.25rem;">📅 الموعد المقترح: ${new Date(req.proposed_date).toLocaleString('ar-EG')}</div>` : ''}
               </div>
 
@@ -356,8 +378,8 @@
                 </span>
 
                 ${isAgentOrAdmin && req.status === 'VIEWING_REQUESTED' ? `
-                  <button onclick="updateViewingStatus('${req.id}', 'VIEWING_AGREED')" class="btn btn-primary btn-sm">قبول المعاينة</button>
-                  <button onclick="updateViewingStatus('${req.id}', 'REJECTED')" class="btn btn-secondary btn-sm" style="color:var(--color-error);">رفض</button>
+                  <button onclick="updateViewingStatus('${safeReqId}', 'VIEWING_AGREED')" class="btn btn-primary btn-sm">قبول المعاينة</button>
+                  <button onclick="updateViewingStatus('${safeReqId}', 'REJECTED')" class="btn btn-secondary btn-sm" style="color:var(--color-error);">رفض</button>
                 ` : ''}
               </div>
             </div>
@@ -370,7 +392,7 @@
 
     async function updateViewingStatus(reqId, newStatus) {
       try {
-        const res = await fetch(`${API_BASE}/contact-requests/${reqId}/status`, {
+        const res = await fetch(`${API_BASE}/contact-requests/${encodeURIComponent(reqId)}/status`, {
           method: 'PATCH',
           headers: App.getAuthHeaders(),
           body: JSON.stringify({ status: newStatus })
@@ -394,21 +416,30 @@
 
         container.innerHTML = `
           <div class="properties-grid" style="margin-top:1rem;">
-            ${list.map(p => `
+            ${list.map(p => {
+              const safePropId = App.escapeHtml(p.id);
+              const safeTitle = App.escapeHtml(p.title);
+              const safeCity = App.escapeHtml(p.city);
+              const safeDistrict = App.escapeHtml(p.district);
+              const safeStatus = App.escapeHtml(p.status);
+              const safePrice = Number(p.price || 0).toLocaleString();
+
+              return `
               <div class="property-card">
                 <div class="property-content">
                   <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:0.5rem;">
-                    <span class="badge" style="background:#0b2545; color:white;">📍 ${p.city} - ${p.district}</span>
-                    <span class="badge ${p.status === 'PUBLISHED' ? 'badge-verified-agent' : 'badge-city'}">${p.status}</span>
+                    <span class="badge" style="background:#0b2545; color:white;">📍 ${safeCity} - ${safeDistrict}</span>
+                    <span class="badge ${p.status === 'PUBLISHED' ? 'badge-verified-agent' : 'badge-city'}">${safeStatus}</span>
                   </div>
-                  <h4 style="margin-bottom:0.5rem;"><a href="/property.html?id=${p.id}">${p.title}</a></h4>
-                  <div style="font-weight:700; color:var(--color-primary); margin-bottom:1rem;">${p.price.toLocaleString()} ج.م</div>
+                  <h4 style="margin-bottom:0.5rem;"><a href="/property.html?id=${safePropId}">${safeTitle}</a></h4>
+                  <div style="font-weight:700; color:var(--color-primary); margin-bottom:1rem;">${safePrice} ج.م</div>
                   <div style="display:flex; gap:0.5rem;">
-                    <a href="/property.html?id=${p.id}" class="btn btn-secondary btn-sm">عرض الإعلان</a>
+                    <a href="/property.html?id=${safePropId}" class="btn btn-secondary btn-sm">عرض الإعلان</a>
                   </div>
                 </div>
               </div>
-            `).join('')}
+            `;
+            }).join('')}
           </div>
         `;
       } catch (err) {
@@ -544,18 +575,27 @@
           <table class="comparison-table">
             <thead><tr><th>العقار</th><th>المدينة</th><th>السعر</th><th>الوسيط</th><th>الإجراء</th></tr></thead>
             <tbody>
-              ${pendingProps.map(p => `
+              ${pendingProps.map(p => {
+                const safeId = App.escapeHtml(p.id);
+                const safeTitle = App.escapeHtml(p.title);
+                const safeCity = App.escapeHtml(p.city);
+                const safeDistrict = App.escapeHtml(p.district);
+                const safePrice = Number(p.price || 0).toLocaleString();
+                const safeAgent = App.escapeHtml(p.agent_name);
+
+                return `
                 <tr>
-                  <td><a href="/property.html?id=${p.id}" target="_blank">${p.title}</a></td>
-                  <td>${p.city} (${p.district})</td>
-                  <td>${p.price.toLocaleString()} ج.م</td>
-                  <td>${p.agent_name}</td>
+                  <td><a href="/property.html?id=${safeId}" target="_blank">${safeTitle}</a></td>
+                  <td>${safeCity} (${safeDistrict})</td>
+                  <td>${safePrice} ج.م</td>
+                  <td>${safeAgent}</td>
                   <td>
-                    <button onclick="adminPublishProperty('${p.id}')" class="btn btn-primary btn-sm">اعتماد ونشر</button>
-                    <button onclick="adminRejectProperty('${p.id}')" class="btn btn-secondary btn-sm" style="color:var(--color-error);">رفض</button>
+                    <button onclick="adminPublishProperty('${safeId}')" class="btn btn-primary btn-sm">اعتماد ونشر</button>
+                    <button onclick="adminRejectProperty('${safeId}')" class="btn btn-secondary btn-sm" style="color:var(--color-error);">رفض</button>
                   </td>
                 </tr>
-              `).join('')}
+              `;
+              }).join('')}
             </tbody>
           </table>
         `;
@@ -565,19 +605,26 @@
           <table class="comparison-table">
             <thead><tr><th>المستخدم</th><th>نوع الوثيقة</th><th>الوثيقة الحساسة</th><th>الإجراء</th></tr></thead>
             <tbody>
-              ${pendingVerifs.map(v => `
+              ${pendingVerifs.map(v => {
+                const safeId = App.escapeHtml(v.id);
+                const safeName = App.escapeHtml(v.user_name);
+                const safeEmail = App.escapeHtml(v.user_email);
+                const safeDocType = App.escapeHtml(v.doc_type);
+
+                return `
                 <tr>
-                  <td>${v.user_name} (${v.user_email})</td>
-                  <td>${v.doc_type}</td>
+                  <td>${safeName} (${safeEmail})</td>
+                  <td>${safeDocType}</td>
                   <td>
-                    <a href="${API_BASE}/admin/verifications/${v.id}/view-file" target="_blank" class="btn btn-outline btn-sm">عرض الوثيقة (مسجل بالـ Audit)</a>
+                    <a href="${API_BASE}/admin/verifications/${safeId}/view-file" target="_blank" class="btn btn-outline btn-sm">عرض الوثيقة (مسجل بالـ Audit)</a>
                   </td>
                   <td>
-                    <button onclick="adminDecideDoc('${v.id}', 'APPROVED')" class="btn btn-primary btn-sm">اعتماد التوثيق</button>
-                    <button onclick="adminDecideDoc('${v.id}', 'REJECTED')" class="btn btn-secondary btn-sm" style="color:var(--color-error);">رفض</button>
+                    <button onclick="adminDecideDoc('${safeId}', 'APPROVED')" class="btn btn-primary btn-sm">اعتماد التوثيق</button>
+                    <button onclick="adminDecideDoc('${safeId}', 'REJECTED')" class="btn btn-secondary btn-sm" style="color:var(--color-error);">رفض</button>
                   </td>
                 </tr>
-              `).join('')}
+              `;
+              }).join('')}
             </tbody>
           </table>
         `;
@@ -587,14 +634,21 @@
           <table class="comparison-table">
             <thead><tr><th>العقار المبلغ عنه</th><th>نوع المخالفة</th><th>التفاصيل</th><th>الحالة</th></tr></thead>
             <tbody>
-              ${reports.map(r => `
+              ${reports.map(r => {
+                const safePropId = App.escapeHtml(r.property_id);
+                const safePropTitle = App.escapeHtml(r.property_title);
+                const safeReason = App.escapeHtml(r.reason);
+                const safeDetails = App.escapeHtml(r.details || '');
+
+                return `
                 <tr>
-                  <td><a href="/property.html?id=${r.property_id}" target="_blank">${r.property_title}</a></td>
-                  <td><span class="badge" style="background:var(--color-error); color:white;">${r.reason}</span></td>
-                  <td>${r.details}</td>
+                  <td><a href="/property.html?id=${safePropId}" target="_blank">${safePropTitle}</a></td>
+                  <td><span class="badge" style="background:var(--color-error); color:white;">${safeReason}</span></td>
+                  <td>${safeDetails}</td>
                   <td>${r.is_resolved ? 'تم الحل' : 'قيد الفحص'}</td>
                 </tr>
-              `).join('')}
+              `;
+              }).join('')}
             </tbody>
           </table>
         `;
@@ -604,15 +658,23 @@
           <table class="comparison-table">
             <thead><tr><th>المشرف</th><th>العملية</th><th>الهدف</th><th>التفاصيل</th><th>الوقت</th></tr></thead>
             <tbody>
-              ${auditLogs.slice(0, 15).map(l => `
+              ${auditLogs.slice(0, 15).map(l => {
+                const safeEmail = App.escapeHtml(l.actor_email);
+                const safeAction = App.escapeHtml(l.action);
+                const safeType = App.escapeHtml(l.target_type);
+                const safeTarget = App.escapeHtml((l.target_id || '').slice(0, 8));
+                const safeDetails = App.escapeHtml(l.details || '');
+
+                return `
                 <tr>
-                  <td>${l.actor_email}</td>
-                  <td><span class="badge badge-licensed">${l.action}</span></td>
-                  <td>${l.target_type} (${l.target_id.slice(0, 8)}...)</td>
-                  <td style="font-size:0.8rem;">${l.details || ''}</td>
+                  <td>${safeEmail}</td>
+                  <td><span class="badge badge-licensed">${safeAction}</span></td>
+                  <td>${safeType} (${safeTarget}...)</td>
+                  <td style="font-size:0.8rem;">${safeDetails}</td>
                   <td style="font-size:0.8rem;">${new Date(l.created_at).toLocaleString('ar-EG')}</td>
                 </tr>
-              `).join('')}
+              `;
+              }).join('')}
             </tbody>
           </table>
         `;

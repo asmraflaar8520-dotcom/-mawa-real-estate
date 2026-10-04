@@ -39,14 +39,34 @@ const App = {
     return headers;
   },
 
+  escapeHtml(str) {
+    if (str === null || str === undefined) return '';
+    return String(str)
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;')
+      .replace(/'/g, '&#39;');
+  },
+
+  sanitizeUrl(url) {
+    if (!url) return '';
+    const clean = String(url).trim();
+    if (clean.startsWith('/') || clean.startsWith('https://') || clean.startsWith('http://')) {
+      return clean.replace(/[<>"']/g, encodeURIComponent);
+    }
+    return '';
+  },
+
   updateAuthUI() {
     const authActions = document.getElementById('nav-auth-actions');
     if (!authActions) return;
 
     if (this.user) {
+      const safeName = this.escapeHtml(this.user.full_name || 'المستخدم');
       authActions.innerHTML = `
         <span class="user-greeting" style="font-size:0.85rem; font-weight:700; color:var(--color-primary);">
-          مرحباً، ${this.user.full_name}
+          مرحباً، ${safeName}
         </span>
         <a href="/dashboard.html" class="btn btn-secondary btn-sm">لوحة التحكم</a>
         <button onclick="App.logout()" class="btn btn-outline btn-sm">خروج</button>
