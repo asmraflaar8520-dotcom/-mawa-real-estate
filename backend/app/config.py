@@ -25,11 +25,17 @@ if IS_VERCEL:
             shutil.copy2(orig_db, tmp_db)
         except Exception:
             pass
-    DATABASE_URL = os.getenv("DATABASE_URL", f"sqlite:///{tmp_db.as_posix()}")
+    db_env = os.getenv("DATABASE_URL") or os.getenv("POSTGRES_URL") or f"sqlite:///{tmp_db.as_posix()}"
+    if db_env.startswith("postgres://"):
+        db_env = db_env.replace("postgres://", "postgresql://", 1)
+    DATABASE_URL = db_env
     STORAGE_PRIVATE_DIR = tmp_dir / "storage" / "private_docs"
     STORAGE_PUBLIC_DIR = tmp_dir / "storage" / "public_media"
 else:
-    DATABASE_URL = os.getenv("DATABASE_URL", f"sqlite:///{BASE_DIR.as_posix()}/mawa.db")
+    db_env = os.getenv("DATABASE_URL") or f"sqlite:///{BASE_DIR.as_posix()}/mawa.db"
+    if db_env.startswith("postgres://"):
+        db_env = db_env.replace("postgres://", "postgresql://", 1)
+    DATABASE_URL = db_env
     STORAGE_PRIVATE_DIR = Path(os.getenv("STORAGE_PRIVATE_DIR", BASE_DIR / "storage" / "private_docs"))
     STORAGE_PUBLIC_DIR = Path(os.getenv("STORAGE_PUBLIC_DIR", BASE_DIR / "storage" / "public_media"))
 
