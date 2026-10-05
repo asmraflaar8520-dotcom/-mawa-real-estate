@@ -136,7 +136,7 @@ class PropertyImage(Base):
     property_id = Column(String(36), ForeignKey("properties.id", ondelete="CASCADE"), nullable=False, index=True)
     file_path = Column(String(255), nullable=False)  # Relative to public_media, metadata stripped
     is_primary = Column(Boolean, default=False)
-    created_at = Column(DateTime, default=datetime.utcnow, nullable=False)
+    created_at = Column(DateTime, default=utc_now, nullable=False)
 
     property = relationship("Property", back_populates="images")
 
@@ -149,7 +149,7 @@ class VerificationDocument(Base):
     file_path = Column(String(255), nullable=False)  # Random UUID in storage/private_docs
     status = Column(SQLEnum(IdentityStatus), default=IdentityStatus.PENDING, nullable=False)
     reviewer_notes = Column(Text, nullable=True)
-    created_at = Column(DateTime, default=datetime.utcnow, nullable=False)
+    created_at = Column(DateTime, default=utc_now, nullable=False)
     reviewed_at = Column(DateTime, nullable=True)
 
     user = relationship("User", back_populates="documents")
@@ -180,7 +180,7 @@ class Favorite(Base):
     id = Column(String(36), primary_key=True, default=generate_uuid)
     user_id = Column(String(36), ForeignKey("users.id", ondelete="CASCADE"), nullable=False, index=True)
     property_id = Column(String(36), ForeignKey("properties.id", ondelete="CASCADE"), nullable=False, index=True)
-    created_at = Column(DateTime, default=datetime.utcnow, nullable=False)
+    created_at = Column(DateTime, default=utc_now, nullable=False)
 
     user = relationship("User", back_populates="favorites")
     property = relationship("Property", back_populates="favorites")
@@ -198,7 +198,7 @@ class PropertyReport(Base):
     reason = Column(SQLEnum(ReportReason), nullable=False)
     details = Column(Text, nullable=False)
     is_resolved = Column(Boolean, default=False, nullable=False)
-    created_at = Column(DateTime, default=datetime.utcnow, nullable=False)
+    created_at = Column(DateTime, default=utc_now, nullable=False)
 
     property = relationship("Property", back_populates="reports")
 
@@ -213,4 +213,4 @@ class AuditLog(Base):
     target_id = Column(String(50), nullable=False)
     details = Column(Text, nullable=True)
     ip_address = Column(String(45), nullable=True)
-    created_at = Column(DateTime, default=datetime.utcnow, nullable=False)
+    created_at = Column(DateTime, default=utc_now, nullable=False)

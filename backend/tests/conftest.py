@@ -1,54 +1,52 @@
-import pytest
+import os
+import sys
 from pathlib import Path
-from backend.app.config import STORAGE_PRIVATE_DIR
-from backend.app.database import SessionLocal
+
+# Force TESTING environment mode before any backend modules are imported
+os.environ["TESTING"] = "1"
+
+import pytest
+from backend.app.config import STORAGE_PRIVATE_DIR, STORAGE_PUBLIC_DIR, BASE_DIR
+from backend.app.database import engine, Base, SessionLocal
+from backend.app.utils.seed_data import seed_database
 from backend.app.models.entities import (
     User, VerificationDocument, AuditLog, ContactRequest, Property
 )
 
 @pytest.fixture(autouse=True, scope="session")
-def auto_cleanup_test_artifacts():
+def setup_and_teardown_test_environment():
     """
-    Session-wide fixture that automatically cleans up all temporary test files
-    and test database entries created during testing, preventing file duplication
-    and database pollution.
+    Session-wide fixture that initializes an isolated test database (test_mawa.db)
+    and seeds test baseline entities, ensuring production mawa.db is NEVER touched or corrupted.
     """
+    # 1. Clean build of test database schema & seed initial test accounts
+    Base.metadata.drop_all(bind=engine)
+    Base.metadata.create_all(bind=engine)
+    seed_database()
+
     yield
 
-    # 1. Clean up mock private documents generated during tests
-    if STORAGE_PRIVATE_DIR.exists():
-        for doc_file in STORAGE_PRIVATE_DIR.glob("priv_doc_*"):
-            try:
-                doc_file.unlink(missing_ok=True)
-            except Exception:
-                pass
-
-    # 2. Clean up test users and test entities from database
-    db = SessionLocal()
+    # 2. Teardown: close DB sessions and engine
     try:
-        # Delete contact requests created during tests
-        db.query(ContactRequest).delete()
-
-        # Delete properties created during test runs
-        test_props = db.query(Property).filter(Property.title.like("شقة تحت المراجعة الإدارية%")).all()
-        for prop in test_props:
-            db.delete(prop)
-
-        # Delete test users
-        test_users = db.query(User).filter(
-            (User.email.like("test.%")) | (User.email == "intruder.user@mawa.eg")
-        ).all()
-        for user in test_users:
-            db.delete(user)
-
-        # Delete test verification records
-        db.query(VerificationDocument).delete()
-
-        # Delete test audit logs
-        db.query(AuditLog).filter(AuditLog.action == "VIEW_SENSITIVE_DOCUMENT").delete()
-
-        db.commit()
+        from sqlalchemy.orm import close_all_sessions
+        close_all_sessions()
     except Exception:
-        db.rollback()
-    finally:
-        db.close()
+        pass
+    engine.dispose()
+
+    # 3. Clean up test private and public storage
+    for test_dir in [STORAGE_PRIVATE_DIR, STORAGE_PUBLIC_DIR]:
+        if test_dir.exists():
+            for f in test_dir.glob("*"):
+                try:
+                    f.unlink(missing_ok=True)
+                except Exception:
+                    pass
+
+    # 4. Remove isolated test database file
+    test_db = BASE_DIR / "test_mawa.db"
+    if test_db.exists():
+        try:
+            test_db.unlink(missing_ok=True)
+        except Exception:
+            pass

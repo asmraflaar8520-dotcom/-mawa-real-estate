@@ -19,7 +19,17 @@ const App = {
     this.updateAuthUI();
   },
 
-  logout() {
+  async logout() {
+    if (this.token) {
+      try {
+        await fetch(`${API_BASE}/auth/logout`, {
+          method: 'POST',
+          headers: this.getAuthHeaders()
+        });
+      } catch (e) {
+        // Continue clearing client credentials even if network fails
+      }
+    }
     this.token = null;
     this.user = null;
     localStorage.removeItem('mawa_token');

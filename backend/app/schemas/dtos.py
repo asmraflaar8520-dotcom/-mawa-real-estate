@@ -229,3 +229,9 @@ class PropertyComparisonItem(BaseModel):
     agent_is_identity_verified: bool
     agent_is_professionally_verified: bool
     primary_image: Optional[str]
+
+# ----------------- Favorite DTO -----------------
+class FavoriteResponse(BaseModel):
+    property_id: str
+    is_favorite: bool
+    message: str

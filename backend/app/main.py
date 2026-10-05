@@ -39,8 +39,12 @@ from contextlib import asynccontextmanager
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
-    # Initialize all database tables
-    Base.metadata.create_all(bind=engine)
+    # Initialize all database tables (supports SQLite & Supabase PostgreSQL)
+    try:
+        Base.metadata.create_all(bind=engine)
+    except Exception as e:
+        import logging
+        logging.getLogger("uvicorn.error").warning(f"[MA'WA Database Initialization] {e}")
     yield
 
 app = FastAPI(

@@ -3,11 +3,16 @@ from sqlalchemy.orm import Session
 from backend.app.database import get_db
 from backend.app.models.entities import Property, PropertyReport, User
 from backend.app.schemas.dtos import ReportCreateRequest, ReportResponse
-from backend.app.security.auth_guard import get_current_user
+from backend.app.security.auth_guard import get_current_user, rate_limit
 
 router = APIRouter(tags=["Reporting & Anti-Fraud"])
 
-@router.post("", response_model=ReportResponse, status_code=status.HTTP_201_CREATED)
+@router.post(
+    "",
+    response_model=ReportResponse,
+    status_code=status.HTTP_201_CREATED,
+    dependencies=[Depends(rate_limit(max_requests=10, window_seconds=60))]
+)
 def submit_report(
     payload: ReportCreateRequest,
     db: Session = Depends(get_db),

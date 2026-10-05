@@ -24,6 +24,7 @@ Thumbs.db
 
 # Test databases
 test.db
+test_mawa.db
 *.test.db
 
 # Databases
