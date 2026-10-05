@@ -14,6 +14,11 @@ PROJECT_ROOT = Path(__file__).resolve().parent.parent.parent
 if str(PROJECT_ROOT) not in sys.path:
     sys.path.insert(0, str(PROJECT_ROOT))
 
+try:
+    sys.stdout.reconfigure(encoding="utf-8", errors="replace")
+except Exception:
+    pass
+
 from sqlalchemy import create_engine, select
 from sqlalchemy.orm import sessionmaker
 from backend.app.database import Base
