@@ -1,6 +1,5 @@
 import sys
 import os
-import traceback
 from pathlib import Path
 
 # Set project root in sys.path
@@ -11,23 +10,6 @@ if str(PROJECT_ROOT) not in sys.path:
 # Ensure VERCEL environment is recognized
 os.environ.setdefault("VERCEL", "1")
 
-try:
-    from backend.app.main import app
-except Exception as e:
-    err_tb = traceback.format_exc()
-    from fastapi import FastAPI
-    from fastapi.responses import JSONResponse
-    app = FastAPI(title="Mawa Startup Diagnostic")
-    
-    @app.api_route("/{path:path}", methods=["GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS", "HEAD"])
-    async def catch_all(path: str):
-        return JSONResponse(
-            status_code=500,
-            content={
-                "error": "Backend initialization failed on Vercel",
-                "exception": str(e),
-                "traceback": err_tb
-            }
-        )
+from backend.app.main import app
 
 __all__ = ["app"]

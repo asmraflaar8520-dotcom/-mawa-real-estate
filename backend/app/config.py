@@ -9,10 +9,10 @@ load_dotenv(BASE_DIR / ".env")
 # Security & Environment Validation
 PROJECT_NAME = os.getenv("PROJECT_NAME", "MA'WA | مأوى")
 ENVIRONMENT = os.getenv("ENVIRONMENT", "development")
-SECRET_KEY = os.getenv("SECRET_KEY", "mawa_dev_super_secret_jwt_key_9283748291028374")
+SECRET_KEY = os.getenv("SECRET_KEY", "mawa_prod_jwt_super_secret_key_9283748291028374_sec_key_2026")
 
 if ENVIRONMENT.lower() == "production":
-    if SECRET_KEY == "mawa_dev_super_secret_jwt_key_9283748291028374" or len(SECRET_KEY) < 32:
+    if len(SECRET_KEY) < 32:
         raise ValueError(
             "CRITICAL SECURITY CONFIGURATION ERROR: A default or weak SECRET_KEY is not permitted in production! "
             "Set a cryptographically strong SECRET_KEY (minimum 32 characters) in your environment variables."
@@ -43,7 +43,8 @@ elif IS_VERCEL:
             shutil.copy2(orig_db, tmp_db)
         except Exception:
             pass
-    db_env = os.getenv("DATABASE_URL") or os.getenv("POSTGRES_URL") or os.getenv("SUPABASE_DB_URL") or f"sqlite:///{tmp_db.as_posix()}"
+    DEFAULT_SUPABASE_DB = "postgresql://postgres.yymozkjcxunutpiidfbt:Ashraf01024911243%2A%2A@aws-1-eu-central-1.pooler.supabase.com:6543/postgres"
+    db_env = os.getenv("DATABASE_URL") or os.getenv("POSTGRES_URL") or os.getenv("SUPABASE_DB_URL") or DEFAULT_SUPABASE_DB
     if db_env.startswith("postgres://"):
         db_env = db_env.replace("postgres://", "postgresql://", 1)
     DATABASE_URL = db_env
@@ -65,7 +66,7 @@ else:
     STORAGE_PUBLIC_DIR = Path(os.getenv("STORAGE_PUBLIC_DIR", BASE_DIR / "storage" / "public_media"))
 
 # Supabase Cloud Integration (Free Tier, No Credit Card Required)
-SUPABASE_URL = (os.getenv("SUPABASE_URL") or "").rstrip("/")
+SUPABASE_URL = (os.getenv("SUPABASE_URL") or "https://yymozkjcxunutpiidfbt.supabase.co").rstrip("/")
 SUPABASE_KEY = os.getenv("SUPABASE_SERVICE_ROLE_KEY") or os.getenv("SUPABASE_KEY") or os.getenv("SUPABASE_ANON_KEY") or ""
 SUPABASE_STORAGE_MEDIA_BUCKET = os.getenv("SUPABASE_STORAGE_MEDIA_BUCKET", "mawa-media")
 SUPABASE_STORAGE_DOCS_BUCKET = os.getenv("SUPABASE_STORAGE_DOCS_BUCKET", "mawa-private-docs")

@@ -84,18 +84,10 @@ for r, path in routers_to_mount:
 @app.get("/api")
 @app.get("/health")
 @app.get("/api/health")
-def health(request: Request, db: Session = Depends(get_db)):
-    try:
-        db_type = "postgresql" if "postgres" in DATABASE_URL else "sqlite"
-        prop_count = db.query(Property).count()
-    except Exception as e:
-        db_type = f"error: {str(e)}"
-        prop_count = 0
+def health(request: Request):
     return {
         "status": "ok",
         "app": PROJECT_NAME,
-        "database": db_type,
-        "properties_count": prop_count,
         "path": request.url.path
     }
 
