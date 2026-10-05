@@ -5,6 +5,8 @@ from backend.app.config import DATABASE_URL
 connect_args = {}
 engine_kwargs = {}
 
+DB_INIT_ERROR = None
+
 if DATABASE_URL.startswith("sqlite"):
     connect_args = {"check_same_thread": False}
     engine = create_engine(DATABASE_URL, connect_args=connect_args)
@@ -27,6 +29,7 @@ else:
             connect_args={"connect_timeout": 10}
         )
     except Exception as e:
+        DB_INIT_ERROR = str(e)
         import logging
         from backend.app.config import BASE_DIR, IS_VERCEL
         from pathlib import Path

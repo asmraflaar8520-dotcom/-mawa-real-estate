@@ -9,7 +9,7 @@ from sqlalchemy.orm import Session
 from backend.app.config import (
     PROJECT_NAME, ALLOWED_ORIGINS, STORAGE_PUBLIC_DIR, BASE_DIR, DATABASE_URL, IS_VERCEL
 )
-from backend.app.database import engine, Base, SessionLocal, get_db
+from backend.app.database import engine, Base, SessionLocal, get_db, DB_INIT_ERROR
 from backend.app.models.entities import User, Property, UserRole, IdentityStatus, ProfessionalStatus
 from backend.app.security.auth_guard import hash_password
 from backend.app.routes import auth, properties, contacts, verifications, admin, reports
@@ -100,6 +100,9 @@ def health(request: Request):
     return {
         "status": "ok",
         "app": PROJECT_NAME,
+        "database_url": DATABASE_URL[:30] + "...",
+        "db_init_error": DB_INIT_ERROR,
+        "engine_dialect": engine.dialect.name if engine else None,
         "path": request.url.path
     }
 
