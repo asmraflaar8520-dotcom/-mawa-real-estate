@@ -6,7 +6,7 @@ from fastapi.staticfiles import StaticFiles
 from starlette.middleware.base import BaseHTTPMiddleware
 from sqlalchemy.orm import Session
 from backend.app.config import (
-    PROJECT_NAME, ALLOWED_ORIGINS, STORAGE_PUBLIC_DIR, BASE_DIR, DATABASE_URL
+    PROJECT_NAME, ALLOWED_ORIGINS, STORAGE_PUBLIC_DIR, BASE_DIR, DATABASE_URL, IS_VERCEL
 )
 from backend.app.database import engine, Base, SessionLocal, get_db
 from backend.app.models.entities import User, Property, UserRole, IdentityStatus, ProfessionalStatus
@@ -40,12 +40,13 @@ from contextlib import asynccontextmanager
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
-    # Initialize all database tables (supports SQLite & Supabase PostgreSQL)
-    try:
-        Base.metadata.create_all(bind=engine)
-    except Exception as e:
-        import logging
-        logging.getLogger("uvicorn.error").warning(f"[MA'WA Database Initialization] {e}")
+    # Only run table creation when not running on Vercel serverless (where tables are already created)
+    if not IS_VERCEL:
+        try:
+            Base.metadata.create_all(bind=engine)
+        except Exception as e:
+            import logging
+            logging.getLogger("uvicorn.error").warning(f"[MA'WA Database Initialization] {e}")
     yield
 
 app = FastAPI(

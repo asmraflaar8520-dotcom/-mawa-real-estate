@@ -21,8 +21,9 @@ else:
         DATABASE_URL,
         pool_pre_ping=True,      # Tests connection health before checkout to prevent disconnected SSL sockets
         pool_recycle=300,        # Recycles idle connections every 5 minutes
-        pool_size=10,            # Max persistent connections per instance
-        max_overflow=5
+        pool_size=5,             # Optimized for serverless
+        max_overflow=2,
+        connect_args={"connect_timeout": 10}
     )
 
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)

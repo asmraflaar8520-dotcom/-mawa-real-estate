@@ -43,10 +43,13 @@ elif IS_VERCEL:
             shutil.copy2(orig_db, tmp_db)
         except Exception:
             pass
-    DEFAULT_SUPABASE_DB = "postgresql://postgres.yymozkjcxunutpiidfbt:Ashraf01024911243%2A%2A@aws-1-eu-central-1.pooler.supabase.com:6543/postgres"
+    DEFAULT_SUPABASE_DB = "postgresql://postgres.yymozkjcxunutpiidfbt:Ashraf01024911243%2A%2A@aws-1-eu-central-1.pooler.supabase.com:5432/postgres?sslmode=require"
     db_env = os.getenv("DATABASE_URL") or os.getenv("POSTGRES_URL") or os.getenv("SUPABASE_DB_URL") or DEFAULT_SUPABASE_DB
     if db_env.startswith("postgres://"):
         db_env = db_env.replace("postgres://", "postgresql://", 1)
+    if "supabase.com" in db_env and "sslmode" not in db_env:
+        delim = "&" if "?" in db_env else "?"
+        db_env = f"{db_env}{delim}sslmode=require"
     DATABASE_URL = db_env
     STORAGE_PRIVATE_DIR = tmp_dir / "storage" / "private_docs"
     STORAGE_PUBLIC_DIR = tmp_dir / "storage" / "public_media"
