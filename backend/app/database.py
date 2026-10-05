@@ -40,7 +40,33 @@ else:
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 Base = declarative_base()
 
+_tables_checked = False
+
+def ensure_db_ready():
+    global _tables_checked
+    if _tables_checked:
+        return
+    try:
+        Base.metadata.create_all(bind=engine)
+        if DATABASE_URL.startswith("sqlite"):
+            db_check = SessionLocal()
+            try:
+                from backend.app.models.entities import Property
+                if db_check.query(Property).count() == 0:
+                    from backend.app.utils.seed_data import seed_database
+                    seed_database()
+            except Exception:
+                pass
+            finally:
+                db_check.close()
+        _tables_checked = True
+    except Exception as e:
+        import logging
+        logging.getLogger("uvicorn.error").warning(f"[DB Auto-Init] {e}")
+
 def get_db():
+    if not _tables_checked:
+        ensure_db_ready()
     db = SessionLocal()
     try:
         yield db
