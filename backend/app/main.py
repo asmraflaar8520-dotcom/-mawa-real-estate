@@ -1,6 +1,7 @@
 import os
 from pathlib import Path
 from fastapi import FastAPI, Request, Response, Depends
+from fastapi.responses import JSONResponse
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
 from starlette.middleware.base import BaseHTTPMiddleware
@@ -101,6 +102,19 @@ def health(request: Request):
         "app": PROJECT_NAME,
         "path": request.url.path
     }
+
+@app.exception_handler(Exception)
+async def global_exception_handler(request: Request, exc: Exception):
+    import traceback
+    return JSONResponse(
+        status_code=500,
+        content={
+            "error": "Unhandled Server Exception",
+            "type": exc.__class__.__name__,
+            "message": str(exc),
+            "traceback": traceback.format_exc()
+        }
+    )
 
 
 # Mount Public Media (Photos with EXIF stripped)
