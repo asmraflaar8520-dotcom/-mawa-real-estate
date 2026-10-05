@@ -100,22 +100,19 @@ def health(request: Request):
     return {
         "status": "ok",
         "app": PROJECT_NAME,
-        "database_url": DATABASE_URL[:30] + "...",
-        "db_init_error": DB_INIT_ERROR,
-        "engine_dialect": engine.dialect.name if engine else None,
+        "database": engine.dialect.name if engine else "sqlite",
         "path": request.url.path
     }
 
 @app.exception_handler(Exception)
 async def global_exception_handler(request: Request, exc: Exception):
-    import traceback
+    import logging
+    logging.getLogger("uvicorn.error").error(f"[Unhandled Server Error] {exc}", exc_info=True)
     return JSONResponse(
         status_code=500,
         content={
-            "error": "Unhandled Server Exception",
-            "type": exc.__class__.__name__,
-            "message": str(exc),
-            "traceback": traceback.format_exc()
+            "error": "Internal Server Error",
+            "message": "حدث خطأ غير متوقع في الخادم، يرجى المحاولة لاحقاً"
         }
     )
 
