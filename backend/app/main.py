@@ -1,14 +1,15 @@
 import os
 from pathlib import Path
-from fastapi import FastAPI, Request, Response
+from fastapi import FastAPI, Request, Response, Depends
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
 from starlette.middleware.base import BaseHTTPMiddleware
+from sqlalchemy.orm import Session
 from backend.app.config import (
-    PROJECT_NAME, ALLOWED_ORIGINS, STORAGE_PUBLIC_DIR, BASE_DIR
+    PROJECT_NAME, ALLOWED_ORIGINS, STORAGE_PUBLIC_DIR, BASE_DIR, DATABASE_URL
 )
-from backend.app.database import engine, Base, SessionLocal
-from backend.app.models.entities import User, UserRole, IdentityStatus, ProfessionalStatus
+from backend.app.database import engine, Base, SessionLocal, get_db
+from backend.app.models.entities import User, Property, UserRole, IdentityStatus, ProfessionalStatus
 from backend.app.security.auth_guard import hash_password
 from backend.app.routes import auth, properties, contacts, verifications, admin, reports
 
@@ -83,10 +84,18 @@ for r, path in routers_to_mount:
 @app.get("/api")
 @app.get("/health")
 @app.get("/api/health")
-def health(request: Request):
+def health(request: Request, db: Session = Depends(get_db)):
+    try:
+        db_type = "postgresql" if "postgres" in DATABASE_URL else "sqlite"
+        prop_count = db.query(Property).count()
+    except Exception as e:
+        db_type = f"error: {str(e)}"
+        prop_count = 0
     return {
         "status": "ok",
         "app": PROJECT_NAME,
+        "database": db_type,
+        "properties_count": prop_count,
         "path": request.url.path
     }
 
