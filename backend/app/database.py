@@ -16,15 +16,23 @@ if DATABASE_URL.startswith("sqlite"):
         cursor.execute("PRAGMA foreign_keys=ON")
         cursor.close()
 else:
-    # PostgreSQL / Supabase cloud connection pooling
-    engine = create_engine(
-        DATABASE_URL,
-        pool_pre_ping=True,      # Tests connection health before checkout to prevent disconnected SSL sockets
-        pool_recycle=300,        # Recycles idle connections every 5 minutes
-        pool_size=5,             # Optimized for serverless
-        max_overflow=2,
-        connect_args={"connect_timeout": 10}
-    )
+    # PostgreSQL / Supabase cloud connection pooling with resilient fallback
+    try:
+        engine = create_engine(
+            DATABASE_URL,
+            pool_pre_ping=True,      # Tests connection health before checkout to prevent disconnected SSL sockets
+            pool_recycle=300,        # Recycles idle connections every 5 minutes
+            pool_size=5,             # Optimized for serverless
+            max_overflow=2,
+            connect_args={"connect_timeout": 10}
+        )
+    except Exception as e:
+        import logging
+        from backend.app.config import BASE_DIR, IS_VERCEL
+        from pathlib import Path
+        logging.getLogger("uvicorn.error").warning(f"[DB Initialization Fallback] {e}")
+        fallback_db = Path("/tmp") / "mawa.db" if IS_VERCEL else BASE_DIR / "mawa.db"
+        engine = create_engine(f"sqlite:///{fallback_db.as_posix()}", connect_args={"check_same_thread": False})
 
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 Base = declarative_base()
