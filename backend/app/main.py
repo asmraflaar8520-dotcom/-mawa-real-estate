@@ -57,7 +57,17 @@ app = FastAPI(
     redirect_slashes=False
 )
 
+# Path Normalization Middleware (Ensures compatibility with Vercel serverless rewrites)
+class PathNormalizationMiddleware(BaseHTTPMiddleware):
+    async def dispatch(self, request: Request, call_next):
+        raw_path = request.scope.get("path", "")
+        if "/index.py" in raw_path:
+            clean_path = raw_path.replace("/index.py", "")
+            request.scope["path"] = clean_path or "/"
+        return await call_next(request)
+
 # Apply Middlewares
+app.add_middleware(PathNormalizationMiddleware)
 app.add_middleware(SecurityHeadersMiddleware)
 app.add_middleware(
     CORSMiddleware,
